@@ -14,7 +14,7 @@ const PLANS = [
   {
     week: "2026-11-09",
     items: [
-      { label: "Dance Slides",        type: "link",  url: "https://docs.google.com/presentation/d/1KMfl8qeZMs3BYgkST3lehQhcGIaVe5quUXnDFO5Ff0w/edit?slide=id.g27b930ed771_0_60#slide=id.g27b930ed771_0_60" },
+      { label: "Dance Slides",        type: "link",  url: "https://docs.google.com/presentation/d/1KMfl8qeZMs3BYgkST3lehQhcGIaVe5quUXnDFO5Ff0w/edit?slide=id.g27b930ed771_0_60#slide=id.g27b930ed771_0_60", icon: "icons/dance.png" },
       { label: "Teach Your Monster", type: "guide", guide: "2026-11-11-teach-your-monster", icon: "icons/tym.png" },
       { label: "Login Practice",      type: "steps", url: "login-practice.html", icon: "icons/practice.png" },
       { label: "Classroom",           type: "link",  url: "https://classroom.google.com", icon: "icons/classroom.png" },

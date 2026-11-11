@@ -81,7 +81,10 @@
   body.dark .item { border-left:6px solid var(--accent); }
   body.dark .swatch.on { border-color:var(--accent); }
   /* black + purple theme (matches the avatar) */
-  body.dark.purple { --soft:#b7a6d6; --accent:#b48cff; --accent3:#2e2540; --onaccent:#14082b; --green:#b48cff; }
+  body.dark.purple { --card:#2a0f58; --accent:#ffffff; --onaccent:#391273; --accent2:#391273; --accent3:#4a1a8c;
+                     --line:#4a2a80; --btn:#2a0f58; --pop:#2a0f58; --soft:#c9bce6; --green:#ffffff; }
+  body.dark.purple .card, body.dark.purple .tool { box-shadow:0 0 0 1px #3d1a78, 0 8px 30px rgba(0,0,0,.5); }
+  body.dark.purple .plan select { background:#391273; border-color:#4a2a80; }
 
   /* ---------- guide viewer (built from guides.js) ---------- */
   .guide { position:fixed; inset:0; z-index:50; display:none; flex-direction:column; gap:1.2vh; padding:1.5vh 16px 80px;
@@ -539,7 +542,7 @@
     ['Chalk',  'linear-gradient(160deg, #2f5d46, #3f7a5c)'],
     ['Black',  'linear-gradient(#0b0b0b, #0b0b0b)', 'dark'],
     ['Green',  'linear-gradient(#19e35a, #19e35a)'],
-    ['Black + purple', 'linear-gradient(#0b0b0b, #0b0b0b)', 'dark purple', 'linear-gradient(135deg, #0b0b0b 55%, #b48cff 55%)']
+    ['Black + purple', 'linear-gradient(#0b0b0b, #0b0b0b)', 'dark purple', 'linear-gradient(135deg, #0b0b0b 55%, #391273 55%)']
   ];
   function setBg(i) {
     document.documentElement.style.setProperty('--bg', BGS[i][1]);
@@ -547,7 +550,7 @@
     document.body.classList.toggle('dark', mode.includes('dark'));
     document.body.classList.toggle('purple', mode.includes('purple'));
     document.querySelectorAll('.swatch').forEach((s, j) => s.classList.toggle('on', j === i));
-    store.set('bg', i);
+    store.set('bg2', i);
   }
   BGS.forEach(([name, css, mode, swatch], i) => {
     const b = document.createElement('button');
@@ -555,8 +558,8 @@
     b.onclick = () => setBg(i);
     $('bgpick').appendChild(b);
   });
-  const BG_DEFAULT = BGS.findIndex(b => b[0] === 'Black');
-  let bgi = Number(store.get('bg', BG_DEFAULT)); setBg(bgi >= 0 && bgi < BGS.length ? bgi : BG_DEFAULT);
+  const BG_DEFAULT = BGS.findIndex(b => b[0] === 'Black + purple');
+  let bgi = Number(store.get('bg2', BG_DEFAULT)); setBg(bgi >= 0 && bgi < BGS.length ? bgi : BG_DEFAULT);
   $('bgBtn').onclick = e => { e.stopPropagation(); $('bgpick').classList.toggle('show'); $('bgBtn').classList.toggle('on'); };
   document.addEventListener('click', e => {
     if (!$('bgpick').contains(e.target) && e.target !== $('bgBtn')) { $('bgpick').classList.remove('show'); $('bgBtn').classList.remove('on'); }
