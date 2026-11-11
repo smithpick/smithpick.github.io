@@ -52,7 +52,8 @@
   /* ---------- plan ---------- */
   .plan { display:flex; flex-direction:column; padding:2.6vh 1.8vw; min-height:0; }
   .plan header { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:2vh; }
-  .plan h2 { margin:0; font-size:min(5vh, 40px); }
+  .plan h2 { margin:0; font-size:min(5vh, 40px); white-space:nowrap; }
+  .plan header .tool { white-space:nowrap; }
   .plan select { font-family:var(--font); font-size:18px; padding:6px 10px; border-radius:12px; border:2px solid var(--line); }
   .items { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1.3vh; overflow:auto; }
   .item { display:flex; align-items:center; gap:1vw; width:100%; text-align:left; border:none; cursor:pointer;
@@ -113,6 +114,7 @@
   .archive li button { width:100%; text-align:left; border:none; border-radius:14px; padding:12px 16px; cursor:pointer;
                        background:var(--accent2); color:var(--ink); font-size:22px; font-weight:700; display:flex; justify-content:space-between; gap:12px; }
   .archive li button:hover { background:var(--accent3); }
+  .archive li.ahead { font-size:16px; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:.06em; padding:8px 4px 0; }
   .archive li small { font-weight:400; color:var(--soft); font-size:16px; white-space:nowrap; }
   .plan header .hbtns { display:flex; gap:8px; align-items:center; }
 
@@ -192,7 +194,7 @@
       <h2 id="planTitle">Plan</h2>
       <div class="hbtns">
         <select id="planPick" aria-label="Choose plan"></select>
-        <button class="tool" id="pastBtn">Past guides</button>
+        <button class="tool" id="pastBtn">All pages</button>
       </div>
     </header>
     <ol class="items" id="items"></ol>
@@ -215,9 +217,9 @@
   <main class="gwall focus" id="gWall"></main>
 </div>
 
-<div class="archive" id="archive" role="dialog" aria-label="Past guides">
+<div class="archive" id="archive" role="dialog" aria-label="All pages">
   <div class="box">
-    <h2>Past guides <button class="tool" id="archClose">Close</button></h2>
+    <h2>All pages <button class="tool" id="archClose">Close</button></h2>
     <ul id="archList"></ul>
   </div>
 </div>
@@ -318,8 +320,17 @@
   paint();
 
   /* ---------- plan ---------- */
-  const plans = (typeof PLANS !== 'undefined' && PLANS.length) ? PLANS : [{ name:'Plan', items:[] }];
-  plans.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.name; $('planPick').appendChild(o); });
+  // Weeks: each plan has week: "YYYY-MM-DD" (the Monday). The board opens to the newest week that has started.
+  const plans = ((typeof PLANS !== 'undefined' && PLANS.length) ? PLANS : [{ week:'', items:[] }])
+    .slice().sort((a, b) => String(b.week || '').localeCompare(String(a.week || '')));
+  const todayKey = (() => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
+  let curIdx = plans.findIndex(p => !p.week || p.week <= todayKey); if (curIdx < 0) curIdx = plans.length - 1;
+  function weekLabel(p) { return p.week ? 'Week of ' + new Date(p.week + 'T12:00').toLocaleDateString('en-US', { month:'short', day:'numeric' }) : (p.name || 'Plan'); }
+  plans.forEach((p, i) => {
+    const o = document.createElement('option'); o.value = i;
+    o.textContent = weekLabel(p).replace('Week of ', '') + (i === curIdx ? ' (now)' : (p.week > todayKey ? ' (next)' : ''));
+    $('planPick').appendChild(o);
+  });
   $('planPick').style.display = plans.length > 1 ? '' : 'none';
   // Google Slides links open in present mode, on the same slide the link points to.
   function presentUrl(url) {
@@ -330,9 +341,16 @@
   }
   const guides = (typeof GUIDES !== 'undefined' && Array.isArray(GUIDES)) ? GUIDES : [];
   function findGuide(id) { return guides.find(g => g.id === id); }
+  function wireItem(el, it, has) {
+    if (!has) return;
+    if (it.type === 'guide') el.onclick = () => openGuide(it.guide);
+    else if (it.type === 'steps') el.onclick = () => openSteps(it.url);
+    else if (el.tagName === 'A') { el.href = presentUrl(it.url); el.target = '_blank'; el.rel = 'noopener'; }
+    else el.onclick = () => window.open(presentUrl(it.url), '_blank', 'noopener');
+  }
   function renderPlan(i) {
     const p = plans[i] || plans[0];
-    $('planTitle').textContent = p.name;
+    $('planTitle').textContent = i === curIdx ? 'This week' : weekLabel(p);
     const ol = $('items'); ol.innerHTML = '';
     p.items.forEach((it, n) => {
       const li = document.createElement('li');
@@ -344,9 +362,7 @@
       el.querySelector('.n').textContent = n + 1;
       el.querySelector('.lbl').textContent = it.label;
       el.querySelector('.kind').textContent = !has ? (isGuide ? 'Guide missing' : 'Link needed') : (it.type === 'link' ? 'Opens tab' : 'Steps');
-      if (has && isGuide) el.onclick = () => openGuide(it.guide);
-      else if (has && it.type === 'steps') el.onclick = () => openSteps(it.url);
-      else if (has) { el.href = presentUrl(it.url); el.target = '_blank'; el.rel = 'noopener'; }
+      wireItem(el, it, has);
       li.appendChild(el); ol.appendChild(li);
     });
     requestAnimationFrame(fitPlan);
@@ -363,9 +379,8 @@
     }
   }
   addEventListener('resize', fitPlan);
-  let planIdx = Number(store.get('plan', 0)); if (!(planIdx < plans.length)) planIdx = 0;
-  $('planPick').value = planIdx; renderPlan(planIdx);
-  $('planPick').onchange = e => { store.set('plan', e.target.value); renderPlan(Number(e.target.value)); };
+  $('planPick').value = curIdx; renderPlan(curIdx);
+  $('planPick').onchange = e => renderPlan(Number(e.target.value));
 
   /* ---------- steps viewer ---------- */
   const viewer = $('viewer'), frame = $('frame');
@@ -427,14 +442,32 @@
   /* ---------- archive ---------- */
   function renderArchive() {
     const ul = $('archList'); ul.innerHTML = '';
+    const head = t => { const li = document.createElement('li'); li.className = 'ahead'; li.textContent = t; ul.appendChild(li); };
     const list = guides.slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-    if (!list.length) { ul.innerHTML = '<li style="font-size:20px;color:var(--soft)">No guides yet.</li>'; return; }
+    head('Guides');
+    if (!list.length) { const li = document.createElement('li'); li.className = 'ahead'; li.textContent = 'None yet'; ul.appendChild(li); }
     list.forEach(g => {
       const li = document.createElement('li'); const b = document.createElement('button');
       b.innerHTML = '<span></span><small></small>';
       b.querySelector('span').textContent = g.title || g.id;
       b.querySelector('small').textContent = g.date ? new Date(g.date + 'T12:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '';
       b.onclick = () => openGuide(g.id);
+      li.appendChild(b); ul.appendChild(li);
+    });
+    // Every other page or link used in any week, newest week first, no repeats.
+    const seen = new Set(), others = [];
+    plans.forEach(p => p.items.forEach(it => {
+      if (it.type === 'guide' || !(it.url && it.url.trim())) return;
+      const k = it.type + '|' + it.url; if (seen.has(k)) return; seen.add(k); others.push(it);
+    }));
+    if (others.length) head('Pages and links');
+    others.forEach(it => {
+      const li = document.createElement('li'); const b = document.createElement('button');
+      b.innerHTML = '<span></span><small></small>';
+      b.querySelector('span').textContent = it.label;
+      b.querySelector('small').textContent = it.type === 'link' ? 'Opens tab' : 'Steps';
+      wireItem(b, it, true);
+      b.addEventListener('click', () => $('archive').classList.remove('show'));
       li.appendChild(b); ul.appendChild(li);
     });
   }
