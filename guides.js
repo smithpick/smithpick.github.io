@@ -5,6 +5,7 @@
 //   { label: "Short label", type: "guide", guide: "<guide id>" }
 //
 // Pictures go in guides/<guide id>/1.jpg, 2.jpg, ...
+// Optional practice: "page.html" adds a Practice button to the guide, and a Steps button on that page.
 // Public repo: no student names, class lists, or class codes in screenshots or text.
 
 const GUIDES = [
@@ -12,6 +13,7 @@ const GUIDES = [
     id: "2026-11-11-teach-your-monster",
     title: "Log in to Teach Your Monster",
     date: "2026-11-11",
+    practice: "login-practice.html",
     steps: [
       { img: "guides/2026-11-11-teach-your-monster/1.jpg", say: "Tap Google Classroom" },
       { img: "guides/2026-11-11-teach-your-monster/2.jpg", say: "Tap Technology" },

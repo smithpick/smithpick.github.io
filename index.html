@@ -135,6 +135,12 @@
              box-shadow:0 6px 20px rgba(0,0,0,.35); }
   .homebtn svg { width:1.2em; height:1.2em; }
   body.viewing .homebtn { display:flex; }
+  /* Practice page opened from a guide sits on top of it; a button jumps back to the steps */
+  .viewer.over { z-index:56; }
+  .stepsbtn { left:auto; right:16px; }
+  body.viewing .stepsbtn { display:none; }
+  body.viewing.pracmode .stepsbtn { display:flex; }
+  .gctl button.prac { background:var(--yellow); border-color:var(--yellow); color:#1d2433; }
 
   /* ---------- background picker ---------- */
   .bgpick { position:fixed; top:64px; right:2vw; z-index:70; background:var(--pop); border-radius:20px; padding:14px;
@@ -229,6 +235,7 @@
       <button class="main" id="gNext">Next</button>
       <button id="gAll">Show all</button>
       <button id="gBig">Big</button>
+      <button class="prac" id="gPrac">Practice</button>
     </div>
   </header>
   <main class="gwall focus" id="gWall"></main>
@@ -243,6 +250,9 @@
 
 <button class="homebtn" id="closeView" aria-label="Home">
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 11.5h3V21h5.5v-6h3v6H19v-9.5h3z" fill="currentColor"/></svg>Home
+</button>
+<button class="homebtn stepsbtn" id="toSteps" aria-label="Back to steps">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h4v4H3zm6 1h12v2H9zM3 10h4v4H3zm6 1h12v2H9zm-6 4h4v4H3zm6 1h12v2H9z" fill="currentColor"/></svg>Steps
 </button>
 <button class="tool drawtoggle" id="drawBtn2">Draw</button>
 
@@ -402,13 +412,26 @@
   /* ---------- steps viewer ---------- */
   const viewer = $('viewer'), frame = $('frame');
   function goFull() { const d = document.documentElement; if (!document.fullscreenElement && d.requestFullscreen) d.requestFullscreen().catch(() => {}); }
+  // A guide with practice: "page.html" links both ways: Practice button on the guide, Steps button on the page.
+  let pracGuide = null;
   function openSteps(url) {
     clearInk();
+    pracGuide = guides.find(g => g.practice === url) || null;
+    document.body.classList.toggle('pracmode', !!pracGuide);
+    viewer.classList.toggle('over', $('guide').classList.contains('show'));
     frame.src = url; viewer.classList.add('show'); document.body.classList.add('viewing');
     frame.onload = () => { try { frame.contentWindow.focus(); } catch(e) {} };
     goFull();
   }
+  function backToSteps() {
+    const g = pracGuide;
+    viewer.classList.remove('show', 'over'); document.body.classList.remove('pracmode'); frame.src = 'about:blank';
+    clearInk(); setDraw(false);
+    if (!$('guide').classList.contains('show') && g) openGuide(g.id);
+  }
+  $('toSteps').onclick = backToSteps;
   function closeSteps() {
+    document.body.classList.remove('pracmode'); viewer.classList.remove('over');
     viewer.classList.remove('show'); $('guide').classList.remove('show'); document.body.classList.remove('viewing'); frame.src = 'about:blank';
     clearInk(); setDraw(false);
   }
@@ -431,6 +454,8 @@
     $('archive').classList.remove('show');
     clearInk();
     $('gTitle').textContent = g.title || 'Steps';
+    $('gPrac').style.display = g.practice ? '' : 'none';
+    $('gPrac').onclick = () => openSteps(g.practice);
     gWall.innerHTML = '';
     (g.steps || []).forEach((st, i) => {
       const d = document.createElement('div'); d.className = 'gstep'; d.tabIndex = 0;
@@ -594,9 +619,10 @@
     if (e.key === 'Escape') {
       if (document.body.classList.contains('drawing')) setDraw(false);
       else if ($('archive').classList.contains('show')) $('archive').classList.remove('show');
+      else if (viewer.classList.contains('over')) backToSteps();
       else if (viewer.classList.contains('show') || guideOpen) closeSteps();
     }
-    if (guideOpen && ['ArrowRight', 'ArrowLeft', ' '].includes(e.key)) { e.preventDefault(); gGo(gCur + (e.key === 'ArrowLeft' ? -1 : 1)); return; }
+    if (guideOpen && !viewer.classList.contains('show') && ['ArrowRight', 'ArrowLeft', ' '].includes(e.key)) { e.preventDefault(); gGo(gCur + (e.key === 'ArrowLeft' ? -1 : 1)); return; }
     if (e.key === 'd' || e.key === 'D') setDraw(!document.body.classList.contains('drawing'));
     if ((e.key === 'z' || e.key === 'Z') && (e.ctrlKey || e.metaKey)) { marks.pop(); redraw(); }
     if (viewer.classList.contains('show') && ['ArrowRight', 'ArrowLeft', ' '].includes(e.key)) {
