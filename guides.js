@@ -9,6 +9,20 @@
 
 const GUIDES = [
   {
+    id: "2026-11-11-teach-your-monster",
+    title: "Log in to Teach Your Monster",
+    date: "2026-11-11",
+    steps: [
+      { img: "guides/2026-11-11-teach-your-monster/1.jpg", say: "Tap Google Classroom" },
+      { img: "guides/2026-11-11-teach-your-monster/2.jpg", say: "Tap Technology" },
+      { img: "guides/2026-11-11-teach-your-monster/3.jpg", say: "Tap Player login" },
+      { img: "guides/2026-11-11-teach-your-monster/4.jpg", say: "Tap the box" },
+      { img: "guides/2026-11-11-teach-your-monster/5.jpg", say: "Tap your name" },
+      { img: "guides/2026-11-11-teach-your-monster/6.jpg", say: "Type your teacher's letter" },
+      { img: "guides/2026-11-11-teach-your-monster/7.jpg", say: "Tap Login" }
+    ]
+  },
+  {
     id: "2026-11-11-seesaw",
     title: "How to open Seesaw",
     date: "2026-11-11",
