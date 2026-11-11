@@ -9,6 +9,18 @@
 
 const GUIDES = [
   {
+    id: "2026-11-11-typetastic",
+    title: "How to open TypeTastic",
+    date: "2026-11-11",
+    steps: [
+      { img: "guides/2026-11-11-typetastic/1.jpg", say: "Tap Google Classroom" },
+      { img: "guides/2026-11-11-typetastic/2.jpg", say: "Tap Technology" },
+      { img: "guides/2026-11-11-typetastic/3.jpg", say: "Tap TypeTastic" },
+      { img: "guides/2026-11-11-typetastic/4.jpg", say: "Tap the red fox" },
+      { img: "guides/2026-11-11-typetastic/5.jpg", say: "Pick a game" }
+    ]
+  },
+  {
     id: "2026-11-11-infohio",
     title: "How to open INFOhio",
     date: "2026-11-11",

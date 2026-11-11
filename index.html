@@ -349,7 +349,20 @@
       else if (has) { el.href = presentUrl(it.url); el.target = '_blank'; el.rel = 'noopener'; }
       li.appendChild(el); ol.appendChild(li);
     });
+    requestAnimationFrame(fitPlan);
+    if (document.fonts) document.fonts.ready.then(fitPlan);
   }
+  // Shrink plan text until every item fits without scrolling.
+  function fitPlan() {
+    const ol = $('items'); ol.style.fontSize = '';
+    const items = ol.querySelectorAll('.item'); items.forEach(x => x.style.fontSize = '');
+    if (!items.length || innerWidth <= 820) return;
+    let size = parseFloat(getComputedStyle(items[0]).fontSize);
+    while (ol.scrollHeight > ol.clientHeight + 1 && size > 16) {
+      size -= 1; items.forEach(x => { x.style.fontSize = size + 'px'; x.style.paddingBlock = (size * .32) + 'px'; });
+    }
+  }
+  addEventListener('resize', fitPlan);
   let planIdx = Number(store.get('plan', 0)); if (!(planIdx < plans.length)) planIdx = 0;
   $('planPick').value = planIdx; renderPlan(planIdx);
   $('planPick').onchange = e => { store.set('plan', e.target.value); renderPlan(Number(e.target.value)); };

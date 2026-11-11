@@ -16,6 +16,7 @@ const PLANS = [
       { label: "Login Practice",      type: "steps", url: "login-practice.html" },
       { label: "Classroom",           type: "link",  url: "https://classroom.google.com" },
       { label: "INFOhio",             type: "guide", guide: "2026-11-11-infohio" },
+      { label: "TypeTastic",          type: "guide", guide: "2026-11-11-typetastic" },
       { label: "TapLights",           type: "link",  url: "https://sites.google.com/plsd.us/taplights-pkc/home" }
     ]
   }
