@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Monster Login Steps</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap">
+<style>
+  /* Layout: projector wall of 7 big picture cards (4 + 3), one lit at a time. Single bright sky look. */
+  :root {
+    color-scheme: light;
+    --sky:#bfe3fa; --sky2:#e6f5fe; --ink:#1d2433; --card:#ffffff;
+    --lit:#7b5ba6; --dim:#c9d3de; --green:#1e8e3e; --yellow:#f6c026;
+    --font:"Andika", "Comic Sans MS", Arial, sans-serif;
+  }
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+  body { margin:0; background:linear-gradient(var(--sky), var(--sky2)); background-color:var(--sky); color:var(--ink);
+         font-family:var(--font); display:flex; flex-direction:column; gap:1.2vh;
+         padding-block:1.5vh; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  h1 { margin:0; font-size:clamp(26px, 4.2vh, 46px); text-wrap:balance; }
+  .controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .controls button { font-family:var(--font); font-size:clamp(18px, 2.6vh, 28px); font-weight:700; border:none; border-radius:999px;
+                     padding:8px 26px; cursor:pointer; background:var(--lit); color:#fff; }
+  .controls button.soft { background:#fff; color:var(--lit); border:3px solid var(--lit); padding:5px 20px; }
+  .controls button:focus-visible, .step:focus-visible { outline:4px solid var(--yellow); outline-offset:3px; }
+  .setting { font-size:15px; background:#fff; border-radius:10px; padding:6px 10px; display:flex; gap:6px; align-items:center; }
+  .setting input { width:2.4em; font-size:18px; text-align:center; text-transform:uppercase; font-family:var(--font);
+                   border:2px solid var(--dim); border-radius:6px; }
+
+  .wall { flex:1; min-height:0; display:flex; flex-wrap:wrap; justify-content:center; align-content:center; gap:2vh 1.6vw; }
+  .step { width:calc(25% - 1.6vw); min-width:200px; background:var(--card); border-radius:22px; border:5px solid transparent;
+          padding:1.4vh 1vw 1.8vh; display:flex; flex-direction:column; align-items:center; gap:1vh; cursor:pointer;
+          transition:opacity .25s, transform .25s, border-color .25s; box-shadow:0 4px 14px rgba(30,60,90,.12); }
+  .wall.focus .step { opacity:.35; }
+  .wall.focus .step.on { opacity:1; border-color:var(--lit); transform:scale(1.05); box-shadow:0 10px 28px rgba(123,91,166,.35); }
+  .wall.focus .step.done { opacity:.6; }
+  .num { width:clamp(40px, 6vh, 64px); height:clamp(40px, 6vh, 64px); border-radius:50%; background:var(--lit); color:#fff;
+         font-size:clamp(24px, 4vh, 42px); font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .pic { width:100%; height:clamp(110px, 20vh, 220px); display:flex; align-items:center; justify-content:center; }
+  .pic img { max-height:100%; max-width:100%; object-fit:contain; border-radius:10px; box-shadow:0 1px 6px rgba(30,60,90,.18); }
+  .say { font-size:clamp(20px, 3.2vh, 36px); font-weight:700; text-align:center; line-height:1.15; text-wrap:balance; }
+  @media (max-width:820px){ .step { width:calc(50% - 1.6vw); } }
+  @media (prefers-reduced-motion: reduce){ .step { transition:none; } .wall.focus .step.on { transform:none; } }
+</style>
+</head>
+<body>
+
+
+<header>
+  <h1>How to log in</h1>
+  <div class="controls">
+    <button class="soft" id="back">Back</button>
+    <button id="next">Next</button>
+    <button class="soft" id="all">Show all</button>
+  </div>
+</header>
+
+<main class="wall focus" id="wall">
+  <div class="step" tabindex="0">
+    <div class="num">1</div>
+    <div class="pic"><img src="images/1.jpg" alt="Tap Google Classroom"></div>
+    <div class="say">Tap Google Classroom</div>
+  </div>
+  <div class="step" tabindex="0">
+    <div class="num">2</div>
+    <div class="pic"><img src="images/2.jpg" alt="Tap Technology"></div>
+    <div class="say">Tap Technology</div>
+  </div>
+  <div class="step" tabindex="0">
+    <div class="num">3</div>
+    <div class="pic"><img src="images/3.jpg" alt="Tap Player login"></div>
+    <div class="say">Tap Player login</div>
+  </div>
+  <div class="step" tabindex="0">
+    <div class="num">4</div>
+    <div class="pic"><img src="images/4.jpg" alt="Tap the box"></div>
+    <div class="say">Tap the box</div>
+  </div>
+  <div class="step" tabindex="0">
+    <div class="num">5</div>
+    <div class="pic"><img src="images/5.jpg" alt="Tap your name"></div>
+    <div class="say">Tap your name</div>
+  </div>
+  <div class="step" tabindex="0">
+    <div class="num">6</div>
+    <div class="pic"><img src="images/6.jpg" alt="Type your teacher's letter"></div>
+    <div class="say">Type your teacher's letter</div>
+  </div>
+  <div class="step" tabindex="0">
+    <div class="num">7</div>
+    <div class="pic"><img src="images/7.jpg" alt="Tap Login"></div>
+    <div class="say">Tap Login</div>
+  </div>
+</main>
+
+<script>
+(function(){
+  const wall = document.getElementById('wall');
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const allBtn = document.getElementById('all');
+  let cur = 0;
+
+  function show() {
+    steps.forEach((s, i) => { s.classList.toggle('on', i === cur); s.classList.toggle('done', i < cur); });
+  }
+  function go(i) { cur = Math.max(0, Math.min(steps.length - 1, i)); wall.classList.add('focus'); allBtn.textContent = 'Show all'; show(); }
+
+  document.getElementById('next').addEventListener('click', () => go(cur + 1));
+  document.getElementById('back').addEventListener('click', () => go(cur - 1));
+  allBtn.addEventListener('click', () => {
+    const f = wall.classList.toggle('focus');
+    allBtn.textContent = f ? 'Show all' : 'One at a time';
+  });
+  steps.forEach((s, i) => {
+    s.addEventListener('click', () => go(i));
+    s.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(i); } });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowLeft') go(cur - 1);
+  });
+
+  show();
+})();
+</script>
+
+</body>
+</html>

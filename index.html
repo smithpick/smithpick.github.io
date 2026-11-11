@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap">
+<style>
+  :root {
+    --ink:#1d2433; --soft:#5b6578; --card:rgba(255,255,255,.92); --line:#d9e0ea;
+    --accent:#7b5ba6; --accent2:#efe8f7; --yellow:#f6c026; --red:#d93025; --green:#1e8e3e;
+    --font:"Andika", "Comic Sans MS", Arial, sans-serif;
+    --bg: linear-gradient(160deg, #bfe3fa, #e6f5fe);
+  }
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+  body { margin:0; font-family:var(--font); color:var(--ink); background:var(--bg); background-color:#bfe3fa;
+         background-size:cover; overflow:hidden; }
+  button { font-family:var(--font); }
+  button:focus-visible, a:focus-visible { outline:4px solid var(--yellow); outline-offset:3px; }
+
+  /* ---------- layout ---------- */
+  .board { height:100%; display:grid; grid-template-columns: 1.35fr 1fr; grid-template-rows:auto 1fr;
+           gap:2.2vh 1.8vw; padding:2.2vh 2vw; }
+  .topbar { grid-column:1 / -1; display:flex; justify-content:flex-end; gap:10px; }
+  .card { background:var(--card); border-radius:28px; box-shadow:0 8px 30px rgba(20,40,70,.15); }
+  .left { display:grid; grid-template-rows: 1fr 1fr; gap:2.2vh; min-height:0; }
+
+  .tool { border:none; background:var(--card); color:var(--ink); font-size:18px; font-weight:700; border-radius:999px;
+          padding:8px 18px; cursor:pointer; box-shadow:0 3px 12px rgba(20,40,70,.12); }
+  .tool.on { background:var(--accent); color:#fff; }
+
+  /* ---------- clock ---------- */
+  .clock { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:0; }
+  .time { font-size:min(19vh, 12vw); font-weight:700; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+  .date { font-size:min(4.4vh, 2.6vw); color:var(--soft); margin-top:1vh; }
+
+  /* ---------- timer ---------- */
+  .timer { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.4vh; padding:1.6vh 1.5vw; min-height:0; }
+  .tdisplay { font-size:min(12vh, 8vw); font-weight:700; line-height:1; font-variant-numeric:tabular-nums; }
+  .bar { width:80%; height:14px; border-radius:999px; background:var(--line); overflow:hidden; }
+  .bar i { display:block; height:100%; width:100%; background:var(--green); transition:width .3s linear, background .3s; }
+  .timer.low .bar i { background:var(--yellow); }
+  .timer.done .tdisplay { color:var(--red); animation:pulse 1s ease-in-out infinite; }
+  .timer.done .bar i { background:var(--red); }
+  @keyframes pulse { 50% { transform:scale(1.06); } }
+  .row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .chip { border:3px solid var(--accent); background:#fff; color:var(--accent); font-size:min(2.8vh, 22px); font-weight:700;
+          border-radius:999px; padding:4px 14px; cursor:pointer; }
+  .chip.main { background:var(--accent); color:#fff; min-width:7em; }
+
+  /* ---------- plan ---------- */
+  .plan { display:flex; flex-direction:column; padding:2.6vh 1.8vw; min-height:0; }
+  .plan header { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:2vh; }
+  .plan h2 { margin:0; font-size:min(5vh, 40px); }
+  .plan select { font-family:var(--font); font-size:18px; padding:6px 10px; border-radius:12px; border:2px solid var(--line); }
+  .items { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1.6vh; overflow:auto; }
+  .item { display:flex; align-items:center; gap:1vw; width:100%; text-align:left; border:none; cursor:pointer;
+          background:var(--accent2); color:var(--ink); border-radius:20px; padding:1.8vh 1.2vw;
+          font-size:min(4.4vh, 34px); font-weight:700; text-decoration:none; transition:transform .15s, background .15s; }
+  .item:hover { background:#e2d6f2; transform:translateX(4px); }
+  .item .n { flex:0 0 auto; width:1.6em; height:1.6em; border-radius:50%; background:var(--accent); color:#fff;
+             display:flex; align-items:center; justify-content:center; font-size:.8em; }
+  .item .lbl { flex:1; }
+  .item .kind { font-size:.5em; color:var(--soft); font-weight:400; white-space:nowrap; }
+  .item.missing { opacity:.55; cursor:default; }
+  .item.missing:hover { transform:none; background:var(--accent2); }
+
+  /* ---------- steps overlay ---------- */
+  .viewer { position:fixed; inset:0; z-index:50; background:#000; display:none; }
+  .viewer.show { display:block; }
+  .viewer iframe { width:100%; height:100%; border:0; display:block; background:#fff; }
+  .viewer .close { position:fixed; left:16px; bottom:16px; z-index:51; }
+
+  /* ---------- background picker ---------- */
+  .bgpick { position:fixed; top:64px; right:2vw; z-index:70; background:#fff; border-radius:20px; padding:14px;
+            box-shadow:0 10px 30px rgba(20,40,70,.25); display:none; grid-template-columns:repeat(4, 64px); gap:10px; }
+  .bgpick.show { display:grid; }
+  .swatch { width:64px; height:44px; border-radius:12px; border:3px solid transparent; cursor:pointer; }
+  .swatch.on { border-color:var(--ink); }
+
+  /* ---------- draw layer ---------- */
+  #ink { position:fixed; inset:0; z-index:60; pointer-events:none; touch-action:none; }
+  body.drawing #ink { pointer-events:auto; cursor:crosshair; }
+  .drawbar { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:80; display:none; gap:8px; align-items:center;
+             background:#fff; border-radius:999px; padding:8px 12px; box-shadow:0 8px 26px rgba(20,40,70,.28); }
+  body.drawing .drawbar { display:flex; }
+  .drawbar .tool { box-shadow:none; background:#eef1f6; font-size:17px; padding:7px 14px; }
+  .drawbar .tool.on { background:var(--accent); color:#fff; }
+  .dot { width:30px; height:30px; border-radius:50%; border:3px solid #fff; box-shadow:0 0 0 2px #c9d3de; cursor:pointer; padding:0; }
+  .dot.on { box-shadow:0 0 0 3px var(--ink); }
+  .sep { width:1px; height:28px; background:var(--line); }
+  .drawtoggle { position:fixed; left:120px; bottom:16px; z-index:81; }
+  body:not(.viewing) .drawtoggle { display:none; }
+
+  @media (max-width:820px) {
+    body { overflow:auto; }
+    .board { grid-template-columns:1fr; height:auto; padding:16px; }
+    .left { grid-template-rows:auto auto; }
+    .clock, .timer { padding:3vh 0; }
+    .time { font-size:22vw; } .date { font-size:5vw; } .tdisplay { font-size:16vw; }
+    .item { font-size:24px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .timer.done .tdisplay { animation:none; } .item { transition:none; } }
+</style>
+</head>
+<body>
+
+<div class="board">
+  <div class="topbar">
+    <button class="tool" id="bgBtn">Background</button>
+    <button class="tool" id="drawBtn">Draw</button>
+    <button class="tool" id="fsBtn">Full screen</button>
+  </div>
+
+  <div class="left">
+    <section class="card clock" aria-label="Clock">
+      <div class="time" id="time">12:00</div>
+      <div class="date" id="date"></div>
+    </section>
+
+    <section class="card timer" id="timer" aria-label="Timer">
+      <div class="tdisplay" id="tdisplay">5:00</div>
+      <div class="bar"><i id="tbar"></i></div>
+      <div class="row" id="presets"></div>
+      <div class="row">
+        <button class="chip" id="minus">- 1</button>
+        <button class="chip main" id="startBtn">Start</button>
+        <button class="chip" id="plus">+ 1</button>
+        <button class="chip" id="resetBtn">Reset</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="card plan" aria-label="Plan">
+    <header>
+      <h2 id="planTitle">Plan</h2>
+      <select id="planPick" aria-label="Choose plan"></select>
+    </header>
+    <ol class="items" id="items"></ol>
+  </section>
+</div>
+
+<div class="viewer" id="viewer">
+  <iframe id="frame" title="Steps"></iframe>
+  <button class="tool close" id="closeView">Close</button>
+</div>
+<button class="tool drawtoggle" id="drawBtn2">Draw</button>
+
+<div class="bgpick" id="bgpick" role="dialog" aria-label="Pick background"></div>
+
+<canvas id="ink"></canvas>
+<div class="drawbar" id="drawbar">
+  <button class="tool on" data-shape="pen">Pen</button>
+  <button class="tool" data-shape="arrow">Arrow</button>
+  <button class="tool" data-shape="circle">Circle</button>
+  <span class="sep"></span>
+  <span id="colors" style="display:flex;gap:6px"></span>
+  <span class="sep"></span>
+  <button class="tool" id="undo">Undo</button>
+  <button class="tool" id="clear">Clear</button>
+  <button class="tool on" id="doneDraw">Done</button>
+</div>
+
+<script src="plans.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('cb_' + k); return v === null ? d : v; } catch(e) { return d; } },
+    set(k, v) { try { localStorage.setItem('cb_' + k, v); } catch(e) {} }
+  };
+
+  /* ---------- clock ---------- */
+  function tick() {
+    const d = new Date();
+    let h = d.getHours() % 12 || 12;
+    $('time').textContent = h + ':' + String(d.getMinutes()).padStart(2, '0');
+    $('date').textContent = d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- timer ---------- */
+  const timerEl = $('timer');
+  let total = 300, left = 300, endAt = 0, running = false, iv = null;
+  function fmt(s) { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function paint() {
+    $('tdisplay').textContent = fmt(left);
+    $('tbar').style.width = (total ? Math.max(0, left / total) * 100 : 0) + '%';
+    timerEl.classList.toggle('low', running && left <= 30 && left > 0);
+    $('startBtn').textContent = running ? 'Pause' : (left < total && left > 0 ? 'Go' : 'Start');
+  }
+  function setTime(sec) { stop(); timerEl.classList.remove('done'); total = left = Math.max(0, sec); paint(); }
+  function stop() { running = false; clearInterval(iv); }
+  function start() {
+    if (left <= 0) return;
+    timerEl.classList.remove('done');
+    running = true; endAt = Date.now() + left * 1000;
+    clearInterval(iv);
+    iv = setInterval(() => {
+      left = (endAt - Date.now()) / 1000;
+      if (left <= 0) { left = 0; stop(); timerEl.classList.add('done'); $('tdisplay').textContent = '0:00'; chime(); }
+      paint();
+    }, 200);
+    paint();
+  }
+  function chime() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [0, .35, .7].forEach((t, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = [660, 784, 988][i];
+        g.gain.setValueAtTime(0, ctx.currentTime + t);
+        g.gain.linearRampToValueAtTime(.35, ctx.currentTime + t + .03);
+        g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .6);
+        o.connect(g).connect(ctx.destination); o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + .65);
+      });
+    } catch(e) {}
+  }
+  [1, 2, 3, 5, 10].forEach(m => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = m + ' min';
+    b.onclick = () => setTime(m * 60);
+    $('presets').appendChild(b);
+  });
+  $('startBtn').onclick = () => running ? (stop(), paint()) : start();
+  $('resetBtn').onclick = () => setTime(total);
+  function bump(sec) {
+    const nl = Math.max(0, left + sec);
+    if (nl === 0) { setTime(0); return; }
+    timerEl.classList.remove('done');
+    if (running) endAt += sec * 1000;
+    total = Math.max(total + sec, nl); left = nl; paint();
+  }
+  $('plus').onclick = () => bump(60);
+  $('minus').onclick = () => bump(-60);
+  paint();
+
+  /* ---------- plan ---------- */
+  const plans = (typeof PLANS !== 'undefined' && PLANS.length) ? PLANS : [{ name:'Plan', items:[] }];
+  plans.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.name; $('planPick').appendChild(o); });
+  $('planPick').style.display = plans.length > 1 ? '' : 'none';
+  function renderPlan(i) {
+    const p = plans[i] || plans[0];
+    $('planTitle').textContent = p.name;
+    const ol = $('items'); ol.innerHTML = '';
+    p.items.forEach((it, n) => {
+      const li = document.createElement('li');
+      const has = !!(it.url && it.url.trim());
+      const el = document.createElement(has && it.type !== 'steps' ? 'a' : 'button');
+      el.className = 'item' + (has ? '' : ' missing');
+      el.innerHTML = '<span class="n"></span><span class="lbl"></span><span class="kind"></span>';
+      el.querySelector('.n').textContent = n + 1;
+      el.querySelector('.lbl').textContent = it.label;
+      el.querySelector('.kind').textContent = !has ? 'Link needed' : (it.type === 'steps' ? 'Steps' : 'Opens tab');
+      if (has && it.type === 'steps') el.onclick = () => openSteps(it.url);
+      else if (has) { el.href = it.url; el.target = '_blank'; el.rel = 'noopener'; }
+      li.appendChild(el); ol.appendChild(li);
+    });
+  }
+  let planIdx = Number(store.get('plan', 0)); if (!(planIdx < plans.length)) planIdx = 0;
+  $('planPick').value = planIdx; renderPlan(planIdx);
+  $('planPick').onchange = e => { store.set('plan', e.target.value); renderPlan(Number(e.target.value)); };
+
+  /* ---------- steps viewer ---------- */
+  const viewer = $('viewer'), frame = $('frame');
+  function goFull() { const d = document.documentElement; if (!document.fullscreenElement && d.requestFullscreen) d.requestFullscreen().catch(() => {}); }
+  function openSteps(url) {
+    clearInk();
+    frame.src = url; viewer.classList.add('show'); document.body.classList.add('viewing');
+    frame.onload = () => { try { frame.contentWindow.focus(); } catch(e) {} };
+    goFull();
+  }
+  function closeSteps() {
+    viewer.classList.remove('show'); document.body.classList.remove('viewing'); frame.src = 'about:blank';
+    clearInk(); setDraw(false);
+  }
+  $('closeView').onclick = closeSteps;
+  $('fsBtn').onclick = () => document.fullscreenElement ? document.exitFullscreen() : goFull();
+  document.addEventListener('fullscreenchange', () => { $('fsBtn').textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen'; });
+
+  /* ---------- backgrounds ---------- */
+  const BGS = [
+    ['Sky',    'linear-gradient(160deg, #bfe3fa, #e6f5fe)'],
+    ['Sunrise','linear-gradient(160deg, #ffd3a5, #fd9fb0)'],
+    ['Mint',   'linear-gradient(160deg, #c7f0db, #eafaf1)'],
+    ['Grape',  'linear-gradient(160deg, #8e6cc4, #c9b6ea)'],
+    ['Ocean',  'linear-gradient(160deg, #2d6cdf, #6fc3f7)'],
+    ['Night',  'linear-gradient(160deg, #1b2440, #3a4a7a)'],
+    ['Sunny',  'linear-gradient(160deg, #ffe57a, #fff6c9)'],
+    ['Chalk',  'linear-gradient(160deg, #2f5d46, #3f7a5c)']
+  ];
+  function setBg(i) {
+    document.documentElement.style.setProperty('--bg', BGS[i][1]);
+    document.querySelectorAll('.swatch').forEach((s, j) => s.classList.toggle('on', j === i));
+    store.set('bg', i);
+  }
+  BGS.forEach(([name, css], i) => {
+    const b = document.createElement('button');
+    b.className = 'swatch'; b.style.background = css; b.title = name; b.setAttribute('aria-label', name);
+    b.onclick = () => setBg(i);
+    $('bgpick').appendChild(b);
+  });
+  let bgi = Number(store.get('bg', 0)); setBg(bgi < BGS.length ? bgi : 0);
+  $('bgBtn').onclick = e => { e.stopPropagation(); $('bgpick').classList.toggle('show'); $('bgBtn').classList.toggle('on'); };
+  document.addEventListener('click', e => {
+    if (!$('bgpick').contains(e.target) && e.target !== $('bgBtn')) { $('bgpick').classList.remove('show'); $('bgBtn').classList.remove('on'); }
+  });
+
+  /* ---------- draw layer ---------- */
+  const cv = $('ink'), cx = cv.getContext('2d');
+  const COLORS = ['#e53935', '#ff8f00', '#fdd835', '#1e88e5', '#43a047', '#111111', '#ffffff'];
+  let shape = 'pen', color = COLORS[0], marks = [], cur = null;
+  function size() {
+    const r = window.devicePixelRatio || 1;
+    cv.width = innerWidth * r; cv.height = innerHeight * r;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+    cx.setTransform(r, 0, 0, r, 0, 0); redraw();
+  }
+  function drawMark(m) {
+    cx.strokeStyle = m.c; cx.fillStyle = m.c; cx.lineWidth = 8; cx.lineCap = 'round'; cx.lineJoin = 'round';
+    cx.shadowColor = 'rgba(0,0,0,.35)'; cx.shadowBlur = 4;
+    const [a, b] = [m.p[0], m.p[m.p.length - 1]];
+    cx.beginPath();
+    if (m.s === 'pen') { m.p.forEach((pt, i) => i ? cx.lineTo(pt[0], pt[1]) : cx.moveTo(pt[0], pt[1])); cx.stroke(); }
+    else if (m.s === 'circle') {
+      const rx = Math.abs(b[0] - a[0]) / 2, ry = Math.abs(b[1] - a[1]) / 2;
+      cx.ellipse((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, Math.max(rx, 1), Math.max(ry, 1), 0, 0, Math.PI * 2); cx.stroke();
+    } else if (m.s === 'arrow') {
+      const ang = Math.atan2(b[1] - a[1], b[0] - a[0]), len = Math.hypot(b[0] - a[0], b[1] - a[1]), h = Math.min(40, len * .45);
+      const bx = b[0] - Math.cos(ang) * h * .6, by = b[1] - Math.sin(ang) * h * .6;
+      cx.moveTo(a[0], a[1]); cx.lineTo(bx, by); cx.stroke();
+      cx.beginPath(); cx.moveTo(b[0], b[1]);
+      cx.lineTo(b[0] - h * Math.cos(ang - .45), b[1] - h * Math.sin(ang - .45));
+      cx.lineTo(b[0] - h * Math.cos(ang + .45), b[1] - h * Math.sin(ang + .45));
+      cx.closePath(); cx.fill();
+    }
+  }
+  function redraw() { cx.clearRect(0, 0, innerWidth, innerHeight); marks.forEach(drawMark); if (cur) drawMark(cur); }
+  function clearInk() { marks = []; cur = null; redraw(); }
+  cv.addEventListener('pointerdown', e => { cv.setPointerCapture(e.pointerId); cur = { s:shape, c:color, p:[[e.clientX, e.clientY]] }; });
+  cv.addEventListener('pointermove', e => {
+    if (!cur) return;
+    if (cur.s === 'pen') cur.p.push([e.clientX, e.clientY]); else cur.p[1] = [e.clientX, e.clientY];
+    redraw();
+  });
+  function endStroke() { if (cur && cur.p.length > 1) marks.push(cur); cur = null; redraw(); }
+  cv.addEventListener('pointerup', endStroke); cv.addEventListener('pointercancel', endStroke);
+
+  COLORS.forEach((c, i) => {
+    const b = document.createElement('button');
+    b.className = 'dot' + (i ? '' : ' on'); b.style.background = c; b.setAttribute('aria-label', 'Color ' + (i + 1));
+    b.onclick = () => { color = c; document.querySelectorAll('.dot').forEach(d => d.classList.toggle('on', d === b)); };
+    $('colors').appendChild(b);
+  });
+  document.querySelectorAll('[data-shape]').forEach(b => b.onclick = () => {
+    shape = b.dataset.shape; document.querySelectorAll('[data-shape]').forEach(x => x.classList.toggle('on', x === b));
+  });
+  function setDraw(on) {
+    document.body.classList.toggle('drawing', on);
+    $('drawBtn').classList.toggle('on', on); $('drawBtn2').classList.toggle('on', on);
+  }
+  $('drawBtn').onclick = () => setDraw(!document.body.classList.contains('drawing'));
+  $('drawBtn2').onclick = () => setDraw(!document.body.classList.contains('drawing'));
+  $('doneDraw').onclick = () => setDraw(false);
+  $('undo').onclick = () => { marks.pop(); redraw(); };
+  $('clear').onclick = clearInk;
+  addEventListener('resize', size); size();
+
+  /* ---------- keys ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'SELECT') return;
+    if (e.key === 'Escape') { if (document.body.classList.contains('drawing')) setDraw(false); else if (viewer.classList.contains('show')) closeSteps(); }
+    if (e.key === 'd' || e.key === 'D') setDraw(!document.body.classList.contains('drawing'));
+    if ((e.key === 'z' || e.key === 'Z') && (e.ctrlKey || e.metaKey)) { marks.pop(); redraw(); }
+    if (viewer.classList.contains('show') && ['ArrowRight', 'ArrowLeft', ' '].includes(e.key)) {
+      e.preventDefault();
+      try { frame.contentDocument.dispatchEvent(new KeyboardEvent('keydown', { key:e.key, bubbles:true })); } catch(err) {}
+    }
+  });
+})();
+</script>
+</body>
+</html>
