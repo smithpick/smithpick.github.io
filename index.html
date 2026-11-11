@@ -157,6 +157,13 @@
     .clock, .timer { padding:3vh 0; }
     .time { font-size:22vw; } .date { font-size:5vw; } .tdisplay { font-size:16vw; }
     .item { font-size:24px; }
+    .topbar { order:-2; } .plan { order:-1; }
+    .guide { overflow:auto; padding-bottom:110px; }
+    .gwall { flex:none; align-content:flex-start; }
+    .gstep { width:100%; }
+    .gwall.focus .gstep.on { transform:none; }
+    .gwall.big .gstep.on { height:auto; }
+    .gwall.big .gpic { height:45vh; flex:none; }
   }
   @media (prefers-reduced-motion: reduce) { .timer.done .tdisplay { animation:none; } .item { transition:none; } }
 </style>
