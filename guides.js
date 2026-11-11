@@ -9,6 +9,16 @@
 
 const GUIDES = [
   {
+    id: "2026-11-11-seesaw",
+    title: "How to open Seesaw",
+    date: "2026-11-11",
+    steps: [
+      { img: "guides/2026-11-11-seesaw/1.jpg", say: "Find the purple S" },
+      { img: "guides/2026-11-11-seesaw/2.jpg", say: "Find the green robot" },
+      { img: "guides/2026-11-11-seesaw/3.jpg", say: "Tap Start" }
+    ]
+  },
+  {
     id: "2026-11-11-taplights",
     title: "How to open Tap Lights",
     date: "2026-11-11",
