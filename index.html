@@ -35,11 +35,11 @@
   .avatar { height:min(17vh, 11vw); width:auto; aspect-ratio:1; flex:0 0 auto; }
   .clocktext { display:flex; flex-direction:column; align-items:center; }
   .time { font-size:min(11vh, 7vw); font-weight:700; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
-  .date { font-size:min(3.6vh, 2.2vw); color:var(--soft); margin-top:1vh; }
+  .date { font-size:min(3.6vh, 2.2vw); color:var(--ink); opacity:.85; margin-top:1vh; }
 
   /* ---------- timer ---------- */
   .timer { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.4vh; padding:1.6vh 1.5vw; min-height:0; }
-  .tdisplay { font-size:min(12vh, 8vw); font-weight:700; line-height:1; font-variant-numeric:tabular-nums; }
+  .tdisplay { font-size:min(20vh, 13vw); font-weight:700; line-height:1; font-variant-numeric:tabular-nums; }
   .bar { width:80%; height:14px; border-radius:999px; background:var(--line); overflow:hidden; }
   .bar i { display:block; height:100%; width:100%; background:var(--green); transition:width .3s linear, background .3s; }
   .timer.low .bar i { background:var(--yellow); }
