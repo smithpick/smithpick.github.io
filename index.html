@@ -502,7 +502,8 @@
     b.onclick = () => setBg(i);
     $('bgpick').appendChild(b);
   });
-  let bgi = Number(store.get('bg', 0)); setBg(bgi < BGS.length ? bgi : 0);
+  const BG_DEFAULT = BGS.findIndex(b => b[0] === 'Black');
+  let bgi = Number(store.get('bg', BG_DEFAULT)); setBg(bgi >= 0 && bgi < BGS.length ? bgi : BG_DEFAULT);
   $('bgBtn').onclick = e => { e.stopPropagation(); $('bgpick').classList.toggle('show'); $('bgBtn').classList.toggle('on'); };
   document.addEventListener('click', e => {
     if (!$('bgpick').contains(e.target) && e.target !== $('bgBtn')) { $('bgpick').classList.remove('show'); $('bgBtn').classList.remove('on'); }
