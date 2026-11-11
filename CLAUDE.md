@@ -31,7 +31,7 @@
 - Test in Playwright (Wall and Big, desktop and phone), then push.
 
 ## Current guides
-- Log in to Teach Your Monster (7 steps, from the original login page images)
+- Log in to Teach Your Monster (9 steps: original login page images, then Monster to Read tile, then your monster, NOT Practice)
 - How to open INFOhio (Infohio tile, Grades K-5, Scroll down, Tap the apple, Pick one)
 - How to open TypeTastic (Classroom, Technology, Quick Links TypeTastic, red fox, Pick a game)
 - How to open Tap Lights (Classroom, Technology, Quick Links Tap Lights, Pick one)

@@ -19,7 +19,9 @@ const GUIDES = [
       { img: "guides/2026-11-11-teach-your-monster/4.jpg", say: "Tap the box" },
       { img: "guides/2026-11-11-teach-your-monster/5.jpg", say: "Tap your name" },
       { img: "guides/2026-11-11-teach-your-monster/6.jpg", say: "Type your teacher's letter" },
-      { img: "guides/2026-11-11-teach-your-monster/7.jpg", say: "Tap Login" }
+      { img: "guides/2026-11-11-teach-your-monster/7.jpg", say: "Tap Login" },
+      { img: "guides/2026-11-11-teach-your-monster/8.jpg", say: "Tap Monster to Read" },
+      { img: "guides/2026-11-11-teach-your-monster/9.jpg", say: "Tap your monster. NOT Practice" }
     ]
   },
   {

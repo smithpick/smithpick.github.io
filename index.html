@@ -98,6 +98,11 @@
   .gpic { width:100%; height:clamp(110px, 20vh, 220px); display:flex; align-items:center; justify-content:center; }
   .gpic img { max-height:100%; max-width:100%; object-fit:contain; border-radius:10px; box-shadow:0 1px 6px rgba(30,60,90,.18); }
   .gsay { font-size:clamp(20px, 3.2vh, 36px); font-weight:700; text-align:center; line-height:1.15; text-wrap:balance; }
+  /* 9+ steps: 5 per row so the wall still fits on one screen */
+  @media (min-width:821px) {
+    .gwall.many .gstep { width:calc(20% - 1.6vw); min-width:160px; }
+    .gwall.many .gpic { height:clamp(100px, 18vh, 200px); }
+  }
   /* Big: one picture at a time */
   .gwall.big .gstep { display:none; }
   .gwall.big .gstep.on { display:flex; width:min(92vw, 1400px); height:100%; transform:none; border-color:transparent; }
@@ -432,6 +437,7 @@
       gWall.appendChild(d);
     });
     gSteps = Array.from(gWall.children); gCur = 0;
+    gWall.classList.toggle('many', gSteps.length > 8);
     gWall.classList.add('focus'); $('gAll').textContent = 'Show all';
     gSetBig(store.get('gbig', '0') === '1');
     gShow();
