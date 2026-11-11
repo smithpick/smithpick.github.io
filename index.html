@@ -240,6 +240,13 @@
   const plans = (typeof PLANS !== 'undefined' && PLANS.length) ? PLANS : [{ name:'Plan', items:[] }];
   plans.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.name; $('planPick').appendChild(o); });
   $('planPick').style.display = plans.length > 1 ? '' : 'none';
+  // Google Slides links open in present mode, on the same slide the link points to.
+  function presentUrl(url) {
+    const m = url.match(/^https:\/\/docs\.google\.com\/presentation\/d\/([^\/]+)\/(edit|view|present)/);
+    if (!m) return url;
+    const s = url.match(/slide=(id\.[\w.]+)/);
+    return 'https://docs.google.com/presentation/d/' + m[1] + '/present' + (s ? '?slide=' + s[1] : '');
+  }
   function renderPlan(i) {
     const p = plans[i] || plans[0];
     $('planTitle').textContent = p.name;
@@ -254,7 +261,7 @@
       el.querySelector('.lbl').textContent = it.label;
       el.querySelector('.kind').textContent = !has ? 'Link needed' : (it.type === 'steps' ? 'Steps' : 'Opens tab');
       if (has && it.type === 'steps') el.onclick = () => openSteps(it.url);
-      else if (has) { el.href = it.url; el.target = '_blank'; el.rel = 'noopener'; }
+      else if (has) { el.href = presentUrl(it.url); el.target = '_blank'; el.rel = 'noopener'; }
       li.appendChild(el); ol.appendChild(li);
     });
   }
@@ -288,7 +295,9 @@
     ['Ocean',  'linear-gradient(160deg, #2d6cdf, #6fc3f7)'],
     ['Night',  'linear-gradient(160deg, #1b2440, #3a4a7a)'],
     ['Sunny',  'linear-gradient(160deg, #ffe57a, #fff6c9)'],
-    ['Chalk',  'linear-gradient(160deg, #2f5d46, #3f7a5c)']
+    ['Chalk',  'linear-gradient(160deg, #2f5d46, #3f7a5c)'],
+    ['Black',  'linear-gradient(#0b0b0b, #0b0b0b)'],
+    ['Green',  'linear-gradient(#19e35a, #19e35a)']
   ];
   function setBg(i) {
     document.documentElement.style.setProperty('--bg', BGS[i][1]);
