@@ -80,6 +80,8 @@
   body.dark .plan select { background:#202020; color:var(--ink); border-color:#333; }
   body.dark .item { border-left:6px solid var(--accent); }
   body.dark .swatch.on { border-color:var(--accent); }
+  /* black + purple theme (matches the avatar) */
+  body.dark.purple { --soft:#b7a6d6; --accent:#b48cff; --accent3:#2e2540; --onaccent:#14082b; --green:#b48cff; }
 
   /* ---------- guide viewer (built from guides.js) ---------- */
   .guide { position:fixed; inset:0; z-index:50; display:none; flex-direction:column; gap:1.2vh; padding:1.5vh 16px 80px;
@@ -536,17 +538,20 @@
     ['Sunny',  'linear-gradient(160deg, #ffe57a, #fff6c9)'],
     ['Chalk',  'linear-gradient(160deg, #2f5d46, #3f7a5c)'],
     ['Black',  'linear-gradient(#0b0b0b, #0b0b0b)', 'dark'],
-    ['Green',  'linear-gradient(#19e35a, #19e35a)']
+    ['Green',  'linear-gradient(#19e35a, #19e35a)'],
+    ['Black + purple', 'linear-gradient(#0b0b0b, #0b0b0b)', 'dark purple', 'linear-gradient(135deg, #0b0b0b 55%, #b48cff 55%)']
   ];
   function setBg(i) {
     document.documentElement.style.setProperty('--bg', BGS[i][1]);
-    document.body.classList.toggle('dark', BGS[i][2] === 'dark');
+    const mode = BGS[i][2] || '';
+    document.body.classList.toggle('dark', mode.includes('dark'));
+    document.body.classList.toggle('purple', mode.includes('purple'));
     document.querySelectorAll('.swatch').forEach((s, j) => s.classList.toggle('on', j === i));
     store.set('bg', i);
   }
-  BGS.forEach(([name, css], i) => {
+  BGS.forEach(([name, css, mode, swatch], i) => {
     const b = document.createElement('button');
-    b.className = 'swatch'; b.style.background = css; b.title = name; b.setAttribute('aria-label', name);
+    b.className = 'swatch'; b.style.background = swatch || css; b.title = name; b.setAttribute('aria-label', name);
     b.onclick = () => setBg(i);
     $('bgpick').appendChild(b);
   });
