@@ -18,6 +18,7 @@
 - index.html: the board. Clock (compact, with his MS tiger avatar, avatar.png), timer (1/2/3/5/10 min, +/-1, chime), weekly plan panel, steps viewer, guide viewer (Wall / Big), All pages list, backgrounds (Black + purple is default: avatar purple cards #2a0f58 / #391273 with white accents; Black + green still an option), Draw layer (pen/arrow/circle), big Home button on full-screen pages.
 - plans.js: one block per week, keyed by that week's Monday (YYYY-MM-DD). Optional icon: "icons/name.png" (real app icon cropped from screenshots, rounded square) replaces the number. Board opens to the newest week that has started. Future weeks can be added ahead. Old weeks stay.
 - guides.js: step guides. id format YYYY-MM-DD-name. Optional practice: "page.html" adds a yellow Practice button on the guide and a Steps button on that page (Teach Your Monster uses login-practice.html). Images in guides/<guide id>/1.jpg, 2.jpg... Old guides stay and show in All pages.
+- keyboard.html: projected Chromebook keyboard (lowercase keys, search key, Chromebook top row). Tap a key to light it orange (tap again to unlight, Clear resets). Typing on a real keyboard flashes that key. Opens as an overlay from anywhere: Keyboard button in the home top bar and next to Draw on guide/practice pages; Close keyboard returns to the same spot. Also works alone at smithpick.github.io/keyboard.html. Drawn, not a screenshot: he asked for it.
 - sub.html, sub-note.pdf, sub-qr.svg: printable half-sheet sub note with QR code to the board.
 - Google Slides links auto-open in present mode.
 

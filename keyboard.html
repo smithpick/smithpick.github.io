@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chromebook Keyboard</title>
+<style>
+  :root { --u:min(calc((100vw - 40px) / 15.4), calc((100vh - 220px) / 5.9)); --gap:calc(var(--u) * .1);
+          --deck:#2a2a2d; --key:#111113; --label:#f2f2f2; --hot:#ff7a00; }
+  * { box-sizing:border-box; }
+  html, body { height:100%; margin:0; }
+  body { background:#0b0b0b; color:#fff; font-family:Roboto, Arial, Helvetica, sans-serif; display:flex; flex-direction:column;
+         align-items:center; justify-content:center; padding:84px 16px 100px; overflow:hidden; user-select:none; -webkit-user-select:none; }
+  .bar { position:fixed; top:16px; right:16px; display:flex; gap:10px; }
+  .bar button { font:700 clamp(18px, 2.8vh, 28px) Arial, sans-serif; border-radius:999px; padding:8px 26px; cursor:pointer;
+                border:3px solid #fff; background:#0b0b0b; color:#fff; }
+  .deck { background:var(--deck); border-radius:calc(var(--u) * .3); padding:calc(var(--u) * .2); display:flex; flex-direction:column; gap:var(--gap);
+          box-shadow:0 10px 40px rgba(0,0,0,.6); }
+  .row { display:flex; gap:var(--gap); height:var(--u); }
+  .row.top { height:calc(var(--u) * .72); }
+  .k { width:calc(var(--w, 1) * var(--u) - var(--gap) * (1 - 1 / var(--n, 15))); flex:0 0 auto; height:100%;
+       background:var(--key); color:var(--label); border-radius:calc(var(--u) * .14); display:flex; align-items:center; justify-content:center;
+       font-size:calc(var(--u) * .42); line-height:1; cursor:pointer; position:relative; transition:background .12s, transform .12s, box-shadow .12s;
+       box-shadow:inset 0 -3px 0 rgba(255,255,255,.06); }
+  .k.word { font-size:calc(var(--u) * .27); }
+  .k.l { justify-content:flex-start; padding-left:calc(var(--u) * .2); }
+  .k.r { justify-content:flex-end; padding-right:calc(var(--u) * .2); }
+  .k.two { flex-direction:column; gap:calc(var(--u) * .06); font-size:calc(var(--u) * .3); }
+  .k svg { width:calc(var(--u) * .42); height:calc(var(--u) * .42); fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .row.top .k svg { width:calc(var(--u) * .36); height:calc(var(--u) * .36); }
+  .k.on { background:var(--hot); color:#fff; box-shadow:0 0 0 calc(var(--u) * .06) #fff, 0 0 calc(var(--u) * .5) var(--hot); z-index:2; }
+  .k.flash { background:var(--hot); color:#fff; transform:scale(1.08); z-index:2; }
+  .arrows { display:grid; grid-template-columns:repeat(3, 1fr); grid-template-rows:1fr 1fr; gap:calc(var(--gap) / 2) var(--gap);
+            width:calc(3 * var(--u) - var(--gap)); height:100%; flex:0 0 auto; }
+  .arrows .k { width:auto; height:auto; font-size:calc(var(--u) * .3); }
+  .arrows .left { grid-column:1; grid-row:2; } .arrows .up { grid-column:2; grid-row:1; }
+  .arrows .down { grid-column:2; grid-row:2; } .arrows .right { grid-column:3; grid-row:2; }
+</style>
+</head>
+<body>
+<div class="bar"><button id="clear">Clear</button></div>
+<div class="deck" id="deck"></div>
+
+<script>
+(function(){
+  // Icons for the top row (simple line drawings of the Chromebook key symbols).
+  const I = {
+    back:'<svg viewBox="0 0 24 24"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>',
+    fwd:'<svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg>',
+    refresh:'<svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.05-4.95M19 4v4h-4"/></svg>',
+    full:'<svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>',
+    overview:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="1.5"/><path d="M19 7v10M22 8v8"/></svg>',
+    dim:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 5v1.5M12 17.5V19M5 12h1.5M17.5 12H19"/></svg>',
+    bright:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>',
+    mute:'<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4zM17 9l5 6M22 9l-5 6"/></svg>',
+    voldown:'<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4zM17 9.5a4 4 0 0 1 0 5"/></svg>',
+    volup:'<svg viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3zM16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"/></svg>',
+    lock:'<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+    search:'<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5.5 5.5"/></svg>'
+  };
+  // [label, width in key units, physical key codes, style]
+  const ROWS = [
+    ['top', [['esc',1.5,['Escape'],'word'], [I.back,1.25,['F1','BrowserBack']], [I.fwd,1.25,['F2','BrowserForward']],
+      [I.refresh,1.25,['F3','BrowserRefresh']], [I.full,1.25,['F4']], [I.overview,1.25,['F5']], [I.dim,1.25,['F6']],
+      [I.bright,1.25,['F7']], [I.mute,1.25,['F8','AudioVolumeMute']], [I.voldown,1.25,['F9','AudioVolumeDown']],
+      [I.volup,1.25,['F10','AudioVolumeUp']], [I.lock,1,['F11','Power']]]],
+    ['', [['~ `',1,['Backquote'],'two'], ['! 1',1,['Digit1'],'two'], ['@ 2',1,['Digit2'],'two'], ['# 3',1,['Digit3'],'two'],
+      ['$ 4',1,['Digit4'],'two'], ['% 5',1,['Digit5'],'two'], ['^ 6',1,['Digit6'],'two'], ['&amp; 7',1,['Digit7'],'two'],
+      ['* 8',1,['Digit8'],'two'], ['( 9',1,['Digit9'],'two'], [') 0',1,['Digit0'],'two'], ['_ -',1,['Minus'],'two'],
+      ['+ =',1,['Equal'],'two'], ['backspace',2,['Backspace'],'word r']]],
+    ['', [['tab',1.5,['Tab'],'word l'], ...'qwertyuiop'.split('').map(c => [c,1,['Key' + c.toUpperCase()]]),
+      ['{ [',1,['BracketLeft'],'two'], ['} ]',1,['BracketRight'],'two'], ['| \\',1.5,['Backslash'],'two']]],
+    ['', [[I.search,1.75,['MetaLeft','MetaRight','CapsLock','OSLeft'],'l'], ...'asdfghjkl'.split('').map(c => [c,1,['Key' + c.toUpperCase()]]),
+      [': ;',1,['Semicolon'],'two'], ['" \'',1,['Quote'],'two'], ['enter',2.25,['Enter','NumpadEnter'],'word r']]],
+    ['', [['shift',2.25,['ShiftLeft'],'word l'], ...'zxcvbnm'.split('').map(c => [c,1,['Key' + c.toUpperCase()]]),
+      ['&lt; ,',1,['Comma'],'two'], ['&gt; .',1,['Period'],'two'], ['? /',1,['Slash'],'two'], ['shift',2.75,['ShiftRight'],'word r']]],
+    ['', [['ctrl',1.5,['ControlLeft'],'word l'], ['alt',1.25,['AltLeft'],'word l'], ['',6.5,['Space']],
+      ['alt',1.25,['AltRight'],'word r'], ['ctrl',1.5,['ControlRight'],'word r'], 'ARROWS']]
+  ];
+  const ARROWS = [['left','◀',['ArrowLeft']], ['up','▲',['ArrowUp']], ['down','▼',['ArrowDown']], ['right','▶',['ArrowRight']]];
+  const byCode = {};
+  const deck = document.getElementById('deck');
+  function makeKey(label, w, codes, style) {
+    const k = document.createElement('div');
+    k.className = 'k' + (style ? ' ' + style : '');
+    k.style.setProperty('--w', w);
+    k.innerHTML = style && style.includes('two') ? label.split(' ').map(s => '<span>' + s + '</span>').join('') : label;
+    k.addEventListener('pointerdown', e => { e.preventDefault(); k.classList.toggle('on'); });
+    codes.forEach(c => byCode[c] = k);
+    return k;
+  }
+  ROWS.forEach(([cls, keys]) => {
+    const row = document.createElement('div'); row.className = 'row' + (cls ? ' ' + cls : '');
+    const n = keys.length;
+    keys.forEach(def => {
+      if (def === 'ARROWS') {
+        const a = document.createElement('div'); a.className = 'arrows';
+        ARROWS.forEach(([pos, sym, codes]) => { const k = makeKey(sym, 1, codes); k.classList.add(pos); a.appendChild(k); });
+        row.appendChild(a); return;
+      }
+      const k = makeKey(def[0], def[1], def[2], def[3]);
+      k.style.setProperty('--n', n);
+      row.appendChild(k);
+    });
+    deck.appendChild(row);
+  });
+  // Typing on a real keyboard flashes that key on screen.
+  document.addEventListener('keydown', e => {
+    const k = byCode[e.code]; if (!k) return;
+    e.preventDefault();
+    k.classList.remove('flash'); void k.offsetWidth; k.classList.add('flash');
+    clearTimeout(k._t); k._t = setTimeout(() => k.classList.remove('flash'), 700);
+  });
+  document.getElementById('clear').onclick = () => document.querySelectorAll('.k.on').forEach(k => k.classList.remove('on'));
+})();
+</script>
+</body>
+</html>
