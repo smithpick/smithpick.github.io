@@ -7,7 +7,7 @@
 - The smithpick org is his personal org, not the district's. No school name in the org name on purpose (may change positions).
 
 ## Rules
-- Public repo and site. No student names, class lists, class codes, or student faces in screenshots. Teacher's own name and avatar: keep out where easy.
+- Public repo and site. No student names, class lists, class codes, or student faces in screenshots. Teacher's own name and avatar: keep out where easy. Exception he asked for: avatar.png (MS tiger logo) next to the clock.
 - Kid-facing visuals use real screenshots, not drawings. Kindergartners need to see the exact thing they tap. Exception he approved: the generic Seesaw "Tech Activity" card (guides/2026-11-11-seesaw/3.jpg).
 - Low maintenance. Has to survive a low-prep week.
 - No em dashes. Short labels. Big text for a projector.
@@ -15,7 +15,7 @@
 - Original login-steps.html and login-practice.html stay untouched.
 
 ## Files
-- index.html: the board. Clock, timer (1/2/3/5/10 min, +/-1, chime), weekly plan panel, steps viewer, guide viewer (Wall / Big), All pages list, backgrounds (Black + green is default), Draw layer (pen/arrow/circle), big Home button on full-screen pages.
+- index.html: the board. Clock (compact, with his MS tiger avatar, avatar.png), timer (1/2/3/5/10 min, +/-1, chime), weekly plan panel, steps viewer, guide viewer (Wall / Big), All pages list, backgrounds (Black + green is default), Draw layer (pen/arrow/circle), big Home button on full-screen pages.
 - plans.js: one block per week, keyed by that week's Monday (YYYY-MM-DD). Board opens to the newest week that has started. Future weeks can be added ahead. Old weeks stay.
 - guides.js: step guides. id format YYYY-MM-DD-name. Images in guides/<guide id>/1.jpg, 2.jpg... Old guides stay and show in All pages.
 - sub.html, sub-note.pdf, sub-qr.svg: printable half-sheet sub note with QR code to the board.
