@@ -8,7 +8,7 @@
 <style>
   :root {
     --ink:#1d2433; --soft:#5b6578; --card:rgba(255,255,255,.92); --line:#d9e0ea;
-    --accent:#7b5ba6; --accent2:#efe8f7; --yellow:#f6c026; --red:#d93025; --green:#1e8e3e;
+    --accent:#7b5ba6; --accent2:#efe8f7; --accent3:#e2d6f2; --onaccent:#fff; --btn:#fff; --pop:#fff; --yellow:#f6c026; --red:#d93025; --green:#1e8e3e;
     --font:"Andika", "Comic Sans MS", Arial, sans-serif;
     --bg: linear-gradient(160deg, #bfe3fa, #e6f5fe);
   }
@@ -28,7 +28,7 @@
 
   .tool { border:none; background:var(--card); color:var(--ink); font-size:18px; font-weight:700; border-radius:999px;
           padding:8px 18px; cursor:pointer; box-shadow:0 3px 12px rgba(20,40,70,.12); }
-  .tool.on { background:var(--accent); color:#fff; }
+  .tool.on { background:var(--accent); color:var(--onaccent); }
 
   /* ---------- clock ---------- */
   .clock { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:0; }
@@ -45,26 +45,76 @@
   .timer.done .bar i { background:var(--red); }
   @keyframes pulse { 50% { transform:scale(1.06); } }
   .row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  .chip { border:3px solid var(--accent); background:#fff; color:var(--accent); font-size:min(2.8vh, 22px); font-weight:700;
+  .chip { border:3px solid var(--accent); background:var(--btn); color:var(--accent); font-size:min(2.8vh, 22px); font-weight:700;
           border-radius:999px; padding:4px 14px; cursor:pointer; }
-  .chip.main { background:var(--accent); color:#fff; min-width:7em; }
+  .chip.main { background:var(--accent); color:var(--onaccent); min-width:7em; }
 
   /* ---------- plan ---------- */
   .plan { display:flex; flex-direction:column; padding:2.6vh 1.8vw; min-height:0; }
   .plan header { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:2vh; }
   .plan h2 { margin:0; font-size:min(5vh, 40px); }
   .plan select { font-family:var(--font); font-size:18px; padding:6px 10px; border-radius:12px; border:2px solid var(--line); }
-  .items { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1.6vh; overflow:auto; }
+  .items { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1.3vh; overflow:auto; }
   .item { display:flex; align-items:center; gap:1vw; width:100%; text-align:left; border:none; cursor:pointer;
-          background:var(--accent2); color:var(--ink); border-radius:20px; padding:1.8vh 1.2vw;
-          font-size:min(4.4vh, 34px); font-weight:700; text-decoration:none; transition:transform .15s, background .15s; }
-  .item:hover { background:#e2d6f2; transform:translateX(4px); }
-  .item .n { flex:0 0 auto; width:1.6em; height:1.6em; border-radius:50%; background:var(--accent); color:#fff;
+          background:var(--accent2); color:var(--ink); border-radius:20px; padding:1.3vh 1.2vw;
+          font-size:min(4vh, 32px); font-weight:700; text-decoration:none; transition:transform .15s, background .15s; }
+  .item:hover { background:var(--accent3); transform:translateX(4px); }
+  .item .n { flex:0 0 auto; width:1.6em; height:1.6em; border-radius:50%; background:var(--accent); color:var(--onaccent);
              display:flex; align-items:center; justify-content:center; font-size:.8em; }
   .item .lbl { flex:1; }
   .item .kind { font-size:.5em; color:var(--soft); font-weight:400; white-space:nowrap; }
   .item.missing { opacity:.55; cursor:default; }
   .item.missing:hover { transform:none; background:var(--accent2); }
+
+  /* black + green theme */
+  body.dark { --ink:#f2f5f2; --soft:#9fb3a5; --card:#151515; --line:#2c2c2c; --accent:#22e36b; --accent2:#1d1d1d;
+              --accent3:#26352b; --onaccent:#062b12; --btn:#151515; --pop:#202020; --green:#22e36b; }
+  body.dark .card, body.dark .tool { box-shadow:0 0 0 1px #262626, 0 8px 30px rgba(0,0,0,.5); }
+  body.dark .plan select { background:#202020; color:var(--ink); border-color:#333; }
+  body.dark .item { border-left:6px solid var(--accent); }
+  body.dark .swatch.on { border-color:var(--accent); }
+
+  /* ---------- guide viewer (built from guides.js) ---------- */
+  .guide { position:fixed; inset:0; z-index:50; display:none; flex-direction:column; gap:1.2vh; padding:1.5vh 16px 80px;
+           background:var(--bg); background-color:#bfe3fa; }
+  body.dark .guide { background-color:#0b0b0b; }
+  .guide.show { display:flex; }
+  .guide header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .guide h1 { margin:0; font-size:clamp(26px, 4.2vh, 46px); background:var(--card); border-radius:999px; padding:4px 22px; }
+  .gctl { display:flex; gap:10px; flex-wrap:wrap; }
+  .gctl button { font-size:clamp(18px, 2.6vh, 28px); font-weight:700; border-radius:999px; padding:6px 22px; cursor:pointer;
+                 border:3px solid var(--accent); background:var(--btn); color:var(--accent); }
+  .gctl button.main { background:var(--accent); color:var(--onaccent); }
+  .gwall { flex:1; min-height:0; display:flex; flex-wrap:wrap; justify-content:center; align-content:center; gap:2vh 1.6vw; }
+  .gstep { width:calc(25% - 1.6vw); min-width:200px; background:var(--card); border-radius:22px; border:5px solid transparent;
+           padding:1.4vh 1vw 1.8vh; display:flex; flex-direction:column; align-items:center; gap:1vh; cursor:pointer;
+           transition:opacity .25s, transform .25s, border-color .25s; box-shadow:0 4px 14px rgba(30,60,90,.12); }
+  .gwall.focus .gstep { opacity:.35; }
+  .gwall.focus .gstep.done { opacity:.6; }
+  .gwall.focus .gstep.on { opacity:1; border-color:var(--accent); transform:scale(1.05); }
+  .gnum { width:clamp(40px, 6vh, 64px); height:clamp(40px, 6vh, 64px); border-radius:50%; background:var(--accent); color:var(--onaccent);
+          font-size:clamp(24px, 4vh, 42px); font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .gpic { width:100%; height:clamp(110px, 20vh, 220px); display:flex; align-items:center; justify-content:center; }
+  .gpic img { max-height:100%; max-width:100%; object-fit:contain; border-radius:10px; box-shadow:0 1px 6px rgba(30,60,90,.18); }
+  .gsay { font-size:clamp(20px, 3.2vh, 36px); font-weight:700; text-align:center; line-height:1.15; text-wrap:balance; }
+  /* Big: one picture at a time */
+  .gwall.big .gstep { display:none; }
+  .gwall.big .gstep.on { display:flex; width:min(92vw, 1400px); height:100%; transform:none; border-color:transparent; }
+  .gwall.big .gpic { flex:1; height:auto; min-height:0; }
+  .gwall.big .gsay { font-size:clamp(30px, 6vh, 64px); }
+  .gwall.big .gnum { width:clamp(50px, 8vh, 84px); height:clamp(50px, 8vh, 84px); font-size:clamp(30px, 5vh, 54px); }
+
+  /* ---------- archive ---------- */
+  .archive { position:fixed; inset:0; z-index:75; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:16px; }
+  .archive.show { display:flex; }
+  .archive .box { background:var(--pop); color:var(--ink); border-radius:24px; padding:22px; width:min(640px, 100%); max-height:85vh; display:flex; flex-direction:column; gap:12px; }
+  .archive h2 { margin:0; font-size:30px; display:flex; justify-content:space-between; align-items:center; }
+  .archive ul { list-style:none; margin:0; padding:0; overflow:auto; display:flex; flex-direction:column; gap:8px; }
+  .archive li button { width:100%; text-align:left; border:none; border-radius:14px; padding:12px 16px; cursor:pointer;
+                       background:var(--accent2); color:var(--ink); font-size:22px; font-weight:700; display:flex; justify-content:space-between; gap:12px; }
+  .archive li button:hover { background:var(--accent3); }
+  .archive li small { font-weight:400; color:var(--soft); font-size:16px; white-space:nowrap; }
+  .plan header .hbtns { display:flex; gap:8px; align-items:center; }
 
   /* ---------- steps overlay ---------- */
   .viewer { position:fixed; inset:0; z-index:50; background:#000; display:none; }
@@ -73,7 +123,7 @@
   .viewer .close { position:fixed; left:16px; bottom:16px; z-index:51; }
 
   /* ---------- background picker ---------- */
-  .bgpick { position:fixed; top:64px; right:2vw; z-index:70; background:#fff; border-radius:20px; padding:14px;
+  .bgpick { position:fixed; top:64px; right:2vw; z-index:70; background:var(--pop); border-radius:20px; padding:14px;
             box-shadow:0 10px 30px rgba(20,40,70,.25); display:none; grid-template-columns:repeat(4, 64px); gap:10px; }
   .bgpick.show { display:grid; }
   .swatch { width:64px; height:44px; border-radius:12px; border:3px solid transparent; cursor:pointer; }
@@ -86,7 +136,7 @@
              background:#fff; border-radius:999px; padding:8px 12px; box-shadow:0 8px 26px rgba(20,40,70,.28); }
   body.drawing .drawbar { display:flex; }
   .drawbar .tool { box-shadow:none; background:#eef1f6; font-size:17px; padding:7px 14px; }
-  .drawbar .tool.on { background:var(--accent); color:#fff; }
+  .drawbar .tool.on { background:var(--accent); color:var(--onaccent); }
   .dot { width:30px; height:30px; border-radius:50%; border:3px solid #fff; box-shadow:0 0 0 2px #c9d3de; cursor:pointer; padding:0; }
   .dot.on { box-shadow:0 0 0 3px var(--ink); }
   .sep { width:1px; height:28px; background:var(--line); }
@@ -135,7 +185,10 @@
   <section class="card plan" aria-label="Plan">
     <header>
       <h2 id="planTitle">Plan</h2>
-      <select id="planPick" aria-label="Choose plan"></select>
+      <div class="hbtns">
+        <select id="planPick" aria-label="Choose plan"></select>
+        <button class="tool" id="pastBtn">Past guides</button>
+      </div>
     </header>
     <ol class="items" id="items"></ol>
   </section>
@@ -145,6 +198,26 @@
   <iframe id="frame" title="Steps"></iframe>
   <button class="tool close" id="closeView">Close</button>
 </div>
+<div class="guide" id="guide">
+  <header>
+    <h1 id="gTitle"></h1>
+    <div class="gctl">
+      <button id="gBack">Back</button>
+      <button class="main" id="gNext">Next</button>
+      <button id="gAll">Show all</button>
+      <button id="gBig">Big</button>
+    </div>
+  </header>
+  <main class="gwall focus" id="gWall"></main>
+</div>
+
+<div class="archive" id="archive" role="dialog" aria-label="Past guides">
+  <div class="box">
+    <h2>Past guides <button class="tool" id="archClose">Close</button></h2>
+    <ul id="archList"></ul>
+  </div>
+</div>
+
 <button class="tool drawtoggle" id="drawBtn2">Draw</button>
 
 <div class="bgpick" id="bgpick" role="dialog" aria-label="Pick background"></div>
@@ -162,6 +235,7 @@
   <button class="tool on" id="doneDraw">Done</button>
 </div>
 
+<script src="guides.js"></script>
 <script src="plans.js"></script>
 <script>
 (function(){
@@ -247,20 +321,24 @@
     const s = url.match(/slide=(id\.[\w.]+)/);
     return 'https://docs.google.com/presentation/d/' + m[1] + '/present' + (s ? '?slide=' + s[1] : '');
   }
+  const guides = (typeof GUIDES !== 'undefined' && Array.isArray(GUIDES)) ? GUIDES : [];
+  function findGuide(id) { return guides.find(g => g.id === id); }
   function renderPlan(i) {
     const p = plans[i] || plans[0];
     $('planTitle').textContent = p.name;
     const ol = $('items'); ol.innerHTML = '';
     p.items.forEach((it, n) => {
       const li = document.createElement('li');
-      const has = !!(it.url && it.url.trim());
-      const el = document.createElement(has && it.type !== 'steps' ? 'a' : 'button');
+      const isGuide = it.type === 'guide';
+      const has = isGuide ? !!findGuide(it.guide) : !!(it.url && it.url.trim());
+      const el = document.createElement(has && it.type === 'link' ? 'a' : 'button');
       el.className = 'item' + (has ? '' : ' missing');
       el.innerHTML = '<span class="n"></span><span class="lbl"></span><span class="kind"></span>';
       el.querySelector('.n').textContent = n + 1;
       el.querySelector('.lbl').textContent = it.label;
-      el.querySelector('.kind').textContent = !has ? 'Link needed' : (it.type === 'steps' ? 'Steps' : 'Opens tab');
-      if (has && it.type === 'steps') el.onclick = () => openSteps(it.url);
+      el.querySelector('.kind').textContent = !has ? (isGuide ? 'Guide missing' : 'Link needed') : (it.type === 'link' ? 'Opens tab' : 'Steps');
+      if (has && isGuide) el.onclick = () => openGuide(it.guide);
+      else if (has && it.type === 'steps') el.onclick = () => openSteps(it.url);
       else if (has) { el.href = presentUrl(it.url); el.target = '_blank'; el.rel = 'noopener'; }
       li.appendChild(el); ol.appendChild(li);
     });
@@ -279,10 +357,70 @@
     goFull();
   }
   function closeSteps() {
-    viewer.classList.remove('show'); document.body.classList.remove('viewing'); frame.src = 'about:blank';
+    viewer.classList.remove('show'); $('guide').classList.remove('show'); document.body.classList.remove('viewing'); frame.src = 'about:blank';
     clearInk(); setDraw(false);
   }
   $('closeView').onclick = closeSteps;
+
+  /* ---------- guides ---------- */
+  const gWall = $('gWall'); let gCur = 0, gSteps = [];
+  function gShow() { gSteps.forEach((s, i) => { s.classList.toggle('on', i === gCur); s.classList.toggle('done', i < gCur); }); }
+  function gGo(i) {
+    gCur = Math.max(0, Math.min(gSteps.length - 1, i));
+    if (!gWall.classList.contains('focus')) { gWall.classList.add('focus'); $('gAll').textContent = 'Show all'; }
+    gShow();
+  }
+  function gSetBig(on) {
+    gWall.classList.toggle('big', on); $('gBig').textContent = on ? 'Wall' : 'Big'; store.set('gbig', on ? 1 : 0);
+    if (on) { gWall.classList.add('focus'); $('gAll').textContent = 'Show all'; }
+  }
+  function openGuide(id) {
+    const g = findGuide(id); if (!g) return;
+    $('archive').classList.remove('show');
+    clearInk();
+    $('gTitle').textContent = g.title || 'Steps';
+    gWall.innerHTML = '';
+    (g.steps || []).forEach((st, i) => {
+      const d = document.createElement('div'); d.className = 'gstep'; d.tabIndex = 0;
+      d.innerHTML = '<div class="gnum"></div><div class="gpic"><img alt=""></div><div class="gsay"></div>';
+      d.querySelector('.gnum').textContent = i + 1;
+      d.querySelector('img').src = st.img; d.querySelector('img').alt = st.say || '';
+      d.querySelector('.gsay').textContent = st.say || '';
+      d.onclick = () => gGo(i);
+      gWall.appendChild(d);
+    });
+    gSteps = Array.from(gWall.children); gCur = 0;
+    gWall.classList.add('focus'); $('gAll').textContent = 'Show all';
+    gSetBig(store.get('gbig', '0') === '1');
+    gShow();
+    $('guide').classList.add('show'); document.body.classList.add('viewing');
+    goFull();
+  }
+  $('gNext').onclick = () => gGo(gCur + 1);
+  $('gBack').onclick = () => gGo(gCur - 1);
+  $('gAll').onclick = () => {
+    if (gWall.classList.contains('big')) gSetBig(false);
+    const f = gWall.classList.toggle('focus'); $('gAll').textContent = f ? 'Show all' : 'One at a time';
+  };
+  $('gBig').onclick = () => gSetBig(!gWall.classList.contains('big'));
+
+  /* ---------- archive ---------- */
+  function renderArchive() {
+    const ul = $('archList'); ul.innerHTML = '';
+    const list = guides.slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+    if (!list.length) { ul.innerHTML = '<li style="font-size:20px;color:var(--soft)">No guides yet.</li>'; return; }
+    list.forEach(g => {
+      const li = document.createElement('li'); const b = document.createElement('button');
+      b.innerHTML = '<span></span><small></small>';
+      b.querySelector('span').textContent = g.title || g.id;
+      b.querySelector('small').textContent = g.date ? new Date(g.date + 'T12:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '';
+      b.onclick = () => openGuide(g.id);
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  $('pastBtn').onclick = () => { renderArchive(); $('archive').classList.add('show'); };
+  $('archClose').onclick = () => $('archive').classList.remove('show');
+  $('archive').onclick = e => { if (e.target === $('archive')) $('archive').classList.remove('show'); };
   $('fsBtn').onclick = () => document.fullscreenElement ? document.exitFullscreen() : goFull();
   document.addEventListener('fullscreenchange', () => { $('fsBtn').textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen'; });
 
@@ -296,11 +434,12 @@
     ['Night',  'linear-gradient(160deg, #1b2440, #3a4a7a)'],
     ['Sunny',  'linear-gradient(160deg, #ffe57a, #fff6c9)'],
     ['Chalk',  'linear-gradient(160deg, #2f5d46, #3f7a5c)'],
-    ['Black',  'linear-gradient(#0b0b0b, #0b0b0b)'],
+    ['Black',  'linear-gradient(#0b0b0b, #0b0b0b)', 'dark'],
     ['Green',  'linear-gradient(#19e35a, #19e35a)']
   ];
   function setBg(i) {
     document.documentElement.style.setProperty('--bg', BGS[i][1]);
+    document.body.classList.toggle('dark', BGS[i][2] === 'dark');
     document.querySelectorAll('.swatch').forEach((s, j) => s.classList.toggle('on', j === i));
     store.set('bg', i);
   }
@@ -379,7 +518,13 @@
   /* ---------- keys ---------- */
   document.addEventListener('keydown', e => {
     if (e.target.tagName === 'SELECT') return;
-    if (e.key === 'Escape') { if (document.body.classList.contains('drawing')) setDraw(false); else if (viewer.classList.contains('show')) closeSteps(); }
+    const guideOpen = $('guide').classList.contains('show');
+    if (e.key === 'Escape') {
+      if (document.body.classList.contains('drawing')) setDraw(false);
+      else if ($('archive').classList.contains('show')) $('archive').classList.remove('show');
+      else if (viewer.classList.contains('show') || guideOpen) closeSteps();
+    }
+    if (guideOpen && ['ArrowRight', 'ArrowLeft', ' '].includes(e.key)) { e.preventDefault(); gGo(gCur + (e.key === 'ArrowLeft' ? -1 : 1)); return; }
     if (e.key === 'd' || e.key === 'D') setDraw(!document.body.classList.contains('drawing'));
     if ((e.key === 'z' || e.key === 'Z') && (e.ctrlKey || e.metaKey)) { marks.pop(); redraw(); }
     if (viewer.classList.contains('show') && ['ArrowRight', 'ArrowLeft', ' '].includes(e.key)) {
