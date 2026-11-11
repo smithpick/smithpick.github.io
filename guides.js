@@ -8,6 +8,18 @@
 // Public repo: no student names, class lists, or class codes in screenshots or text.
 
 const GUIDES = [
+  {
+    id: "2026-11-11-infohio",
+    title: "How to open INFOhio",
+    date: "2026-11-11",
+    steps: [
+      { img: "guides/2026-11-11-infohio/1.jpg", say: "Tap Infohio" },
+      { img: "guides/2026-11-11-infohio/2.jpg", say: "Tap Grades K-5" },
+      { img: "guides/2026-11-11-infohio/3.jpg", say: "Scroll down" },
+      { img: "guides/2026-11-11-infohio/4.jpg", say: "Tap the apple" },
+      { img: "guides/2026-11-11-infohio/5.jpg", say: "Pick one" }
+    ]
+  },
   // {
   //   id: "2026-11-16-taplights",
   //   title: "How to open TapLights",
