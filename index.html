@@ -65,6 +65,10 @@
   .item .n { flex:0 0 auto; width:1.6em; height:1.6em; border-radius:50%; background:var(--accent); color:var(--onaccent);
              display:flex; align-items:center; justify-content:center; font-size:.8em; }
   .item .lbl { flex:1; }
+  .item .ic { flex:0 0 auto; width:1.9em; height:1.9em; border-radius:.45em; object-fit:cover; }
+  .items { flex:1; }
+  .items li { flex:1 1 auto; display:flex; max-height:17vh; }
+  .items li .item { flex:1; }
   .item .kind { font-size:.5em; color:var(--soft); font-weight:400; white-space:nowrap; }
   .item.missing { opacity:.55; cursor:default; }
   .item.missing:hover { transform:none; background:var(--accent2); }
@@ -387,8 +391,9 @@
       el.className = 'item' + (has ? '' : ' missing');
       el.innerHTML = '<span class="n"></span><span class="lbl"></span><span class="kind"></span>';
       el.querySelector('.n').textContent = n + 1;
+      if (it.icon) { const ic = document.createElement('img'); ic.className = 'ic'; ic.src = it.icon; ic.alt = ''; el.querySelector('.n').replaceWith(ic); }
       el.querySelector('.lbl').textContent = it.label;
-      el.querySelector('.kind').textContent = !has ? (isGuide ? 'Guide missing' : 'Link needed') : (it.type === 'link' ? 'Opens tab' : 'Steps');
+      el.querySelector('.kind').textContent = !has ? (isGuide ? 'Guide missing' : 'Link needed') : '';
       wireItem(el, it, has);
       li.appendChild(el); ol.appendChild(li);
     });

@@ -16,7 +16,7 @@
 
 ## Files
 - index.html: the board. Clock (compact, with his MS tiger avatar, avatar.png), timer (1/2/3/5/10 min, +/-1, chime), weekly plan panel, steps viewer, guide viewer (Wall / Big), All pages list, backgrounds (Black + green is default), Draw layer (pen/arrow/circle), big Home button on full-screen pages.
-- plans.js: one block per week, keyed by that week's Monday (YYYY-MM-DD). Board opens to the newest week that has started. Future weeks can be added ahead. Old weeks stay.
+- plans.js: one block per week, keyed by that week's Monday (YYYY-MM-DD). Optional icon: "icons/name.png" (real app icon cropped from screenshots, rounded square) replaces the number. Board opens to the newest week that has started. Future weeks can be added ahead. Old weeks stay.
 - guides.js: step guides. id format YYYY-MM-DD-name. Optional practice: "page.html" adds a yellow Practice button on the guide and a Steps button on that page (Teach Your Monster uses login-practice.html). Images in guides/<guide id>/1.jpg, 2.jpg... Old guides stay and show in All pages.
 - sub.html, sub-note.pdf, sub-qr.svg: printable half-sheet sub note with QR code to the board.
 - Google Slides links auto-open in present mode.
@@ -38,7 +38,7 @@
 - How to open Seesaw (purple S, green robot, Tap Start on generic card)
 
 ## Weekly plan
-- Week of Nov 9, 2026: Dance Slides, Teach Your Monster Login, Login Practice, Classroom, TapLights.
+- Week of Nov 9, 2026: Dance Slides, Teach Your Monster, Login Practice, Classroom, TapLights.
 - Next week not decided yet. He will say what goes on it.
 
 ## Open items
