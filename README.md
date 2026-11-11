@@ -1,6 +1,6 @@
 # Techboard
 
-Teacher-only display board. Open `index.html` (or the GitHub Pages URL) and project it.
+Teacher-only display board. Open `index.html` (or https://smithpick.github.io) and project it.
 
 ## Weekly plan
 `plans.js` has one block per week, keyed by that week's Monday. The board opens to the newest week that has started, so next week can be added ahead of time and it switches on its own Monday. Old weeks stay in the file and in the week menu.
