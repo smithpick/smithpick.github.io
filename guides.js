@@ -9,6 +9,17 @@
 
 const GUIDES = [
   {
+    id: "2026-11-11-taplights",
+    title: "How to open Tap Lights",
+    date: "2026-11-11",
+    steps: [
+      { img: "guides/2026-11-11-taplights/1.jpg", say: "Tap Google Classroom" },
+      { img: "guides/2026-11-11-taplights/2.jpg", say: "Tap Technology" },
+      { img: "guides/2026-11-11-taplights/3.jpg", say: "Tap Tap Lights" },
+      { img: "guides/2026-11-11-taplights/4.jpg", say: "Pick one" }
+    ]
+  },
+  {
     id: "2026-11-11-typetastic",
     title: "How to open TypeTastic",
     date: "2026-11-11",
