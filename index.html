@@ -164,8 +164,9 @@
   .drawbar { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:80; display:none; gap:8px; align-items:center;
              background:#fff; border-radius:999px; padding:8px 12px; box-shadow:0 8px 26px rgba(20,40,70,.28); }
   body.drawing .drawbar { display:flex; }
-  .drawbar .tool { box-shadow:none; background:#eef1f6; font-size:17px; padding:7px 14px; }
-  .drawbar .tool.on { background:var(--accent); color:var(--onaccent); }
+  /* Draw bar is always white, so its buttons use fixed colors that read in every theme */
+  .drawbar .tool { box-shadow:none; background:#eef1f6; color:#1d2433; font-size:17px; padding:7px 14px; }
+  .drawbar .tool.on { background:#391273; color:#fff; }
   .dot { width:30px; height:30px; border-radius:50%; border:3px solid #fff; box-shadow:0 0 0 2px #c9d3de; cursor:pointer; padding:0; }
   .dot.on { box-shadow:0 0 0 3px var(--ink); }
   .sep { width:1px; height:28px; background:var(--line); }
