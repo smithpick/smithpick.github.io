@@ -25,7 +25,7 @@
 ## Building a guide
 - He uploads screenshots and says what kids tap.
 - All app guides start from Classlink (kids get there on their own). Google Classroom based guides start "Tap Google Classroom", "Tap Technology", then Quick Links.
-- Shared first step: guides/classlink.jpg, "Open Classlink". His full Classlink page (teacher view, staff apps left in because he wants the full screen), Frontline tooltip removed and the Google Classroom / Seesaw labels rebuilt. On Teach Your Monster so far; ask before adding to other guides.
+- Shared first step: guides/classlink.jpg, "Open Classlink". His full Classlink page (teacher view, staff apps left in because he wants the full screen), Frontline tooltip removed and the Google Classroom / Seesaw labels rebuilt. It is step 1 of all five guides; new guides start with it too.
 - Crop to what kids need. If an icon sits in a different place for kids, crop tight to the icon only.
 - Box tap targets in orange (#ff7a00 style rounded box). A big orange arrow is fine for "Scroll down".
 - Cover teacher-only UI (remove buttons, tooltips, gradebook stats) with plain background.
@@ -34,10 +34,10 @@
 
 ## Current guides
 - Log in to Teach Your Monster (10 steps: Open Classlink full page, original login page images, then Monster to Read tile, then your monster, NOT Practice)
-- How to open INFOhio (Infohio tile, Grades K-5, Scroll down, Tap the apple, Pick one)
-- How to open TypeTastic (Classroom, Technology, Quick Links TypeTastic, red fox, Pick a game)
-- How to open Tap Lights (Classroom, Technology, Quick Links Tap Lights, Pick one)
-- How to open Seesaw (purple S, green robot, Tap Start on generic card)
+- How to open INFOhio (Open Classlink, Infohio tile, Grades K-5, Scroll down, Tap the apple, Pick one)
+- How to open TypeTastic (Open Classlink, Classroom, Technology, Quick Links TypeTastic, red fox, Pick a game)
+- How to open Tap Lights (Open Classlink, Classroom, Technology, Quick Links Tap Lights, Pick one)
+- How to open Seesaw (Open Classlink, purple S, green robot, Tap Start on generic card)
 
 ## Weekly plan
 - Week of Nov 9, 2026: Dance Slides, Teach Your Monster, Login Practice, Classroom, TapLights.

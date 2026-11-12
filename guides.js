@@ -32,6 +32,7 @@ const GUIDES = [
     title: "How to open Seesaw",
     date: "2026-11-11",
     steps: [
+      { img: "guides/classlink.jpg", say: "Open Classlink" },
       { img: "guides/2026-11-11-seesaw/1.jpg", say: "Find the purple S" },
       { img: "guides/2026-11-11-seesaw/2.jpg", say: "Find the green robot" },
       { img: "guides/2026-11-11-seesaw/3.jpg", say: "Tap Start" }
@@ -42,6 +43,7 @@ const GUIDES = [
     title: "How to open Tap Lights",
     date: "2026-11-11",
     steps: [
+      { img: "guides/classlink.jpg", say: "Open Classlink" },
       { img: "guides/2026-11-11-taplights/1.jpg", say: "Tap Google Classroom" },
       { img: "guides/2026-11-11-taplights/2.jpg", say: "Tap Technology" },
       { img: "guides/2026-11-11-taplights/3.jpg", say: "Tap Tap Lights" },
@@ -53,6 +55,7 @@ const GUIDES = [
     title: "How to open TypeTastic",
     date: "2026-11-11",
     steps: [
+      { img: "guides/classlink.jpg", say: "Open Classlink" },
       { img: "guides/2026-11-11-typetastic/1.jpg", say: "Tap Google Classroom" },
       { img: "guides/2026-11-11-typetastic/2.jpg", say: "Tap Technology" },
       { img: "guides/2026-11-11-typetastic/3.jpg", say: "Tap TypeTastic" },
@@ -65,6 +68,7 @@ const GUIDES = [
     title: "How to open INFOhio",
     date: "2026-11-11",
     steps: [
+      { img: "guides/classlink.jpg", say: "Open Classlink" },
       { img: "guides/2026-11-11-infohio/1.jpg", say: "Tap Infohio" },
       { img: "guides/2026-11-11-infohio/2.jpg", say: "Tap Grades K-5" },
       { img: "guides/2026-11-11-infohio/3.jpg", say: "Scroll down" },
