@@ -9,6 +9,7 @@ Each item:
 - `label`: short text on the button
 - `type`: `"guide"` opens a guide from `guides.js`, `"steps"` opens a page full screen, `"link"` opens a new tab
 - `url` or `guide`: what it opens. Leave `url` as `""` if the link isn't ready.
+- `icon` (optional): `"icons/name.png"`, a real app icon shown in place of the number
 
 "All pages" lists every guide and every page or link used in any week.
 
