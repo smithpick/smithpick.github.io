@@ -125,6 +125,16 @@
     .gwall.many .gstep { width:calc(20% - 1.6vw); min-width:160px; }
     .gwall.many .gpic { height:clamp(100px, 18vh, 200px); }
   }
+  /* Edit: tap steps to hide or show them (saved on this device) */
+  .gstep.hid { display:none; }
+  .gwall.editing .gstep { display:flex; opacity:1; transform:none; border-color:transparent; position:relative; }
+  .gwall.editing .gstep.hid::after { content:"Hidden"; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-12deg);
+    background:#d93025; color:#fff; font-weight:700; font-size:clamp(22px, 4vh, 40px); padding:.1em .7em; border-radius:999px; opacity:1; }
+  .gwall.editing .gstep.hid { opacity:1; } .gwall.editing .gstep.hid > * { opacity:.25; }
+  .gctl button.editon { background:#d93025; border-color:#d93025; color:#fff; }
+  .ghint { display:none; text-align:center; font-size:clamp(18px, 2.8vh, 28px); font-weight:700; }
+  .guide.editing .ghint { display:block; }
+  .guide.editing #gBack, .guide.editing #gNext, .guide.editing #gAll, .guide.editing #gBig, .guide.editing #gPrac { display:none !important; }
   /* Big: one picture at a time */
   .gwall.big .gstep { display:none; }
   .gwall.big .gstep.on { display:flex; width:min(92vw, 1400px); height:100%; transform:none; border-color:transparent; }
@@ -262,12 +272,14 @@
 <div class="guide" id="guide">
   <header>
     <h1 id="gTitle"></h1>
+    <div class="ghint">Tap a step to hide it. Tap again to bring it back.</div>
     <div class="gctl">
       <button id="gBack">Back</button>
       <button class="main" id="gNext">Next</button>
       <button id="gAll">Show all</button>
       <button id="gBig">Big</button>
       <button class="prac" id="gPrac">Practice</button>
+      <button id="gEdit">Edit</button>
     </div>
   </header>
   <main class="gwall focus" id="gWall"></main>
@@ -476,7 +488,32 @@
   $('closeView').onclick = closeSteps;
 
   /* ---------- guides ---------- */
-  const gWall = $('gWall'); let gCur = 0, gSteps = [];
+  const gWall = $('gWall'); let gCur = 0, gSteps = [], gAllSteps = [], gId = '', gHidden = new Set();
+  // Hidden steps are remembered on this device, per guide, by picture path.
+  function gLoadHidden(id) { try { return new Set(JSON.parse(store.get('ghide_' + id, '[]'))); } catch(e) { return new Set(); } }
+  function gApplyHidden() {
+    gAllSteps.forEach(d => d.classList.toggle('hid', gHidden.has(d.dataset.key)));
+    gSteps = gAllSteps.filter(d => !d.classList.contains('hid'));
+    gSteps.forEach((d, i) => d.querySelector('.gnum').textContent = i + 1);
+    gAllSteps.filter(d => d.classList.contains('hid')).forEach(d => d.querySelector('.gnum').textContent = '\u00d7');
+    const editing = gWall.classList.contains('editing');
+    gWall.classList.toggle('many', (editing ? gAllSteps : gSteps).length > 8);
+    $('gEdit').textContent = editing ? 'Done' : 'Edit';
+    $('gEdit').classList.toggle('editon', editing);
+  }
+  function gSetEdit(on) {
+    if (on) { gWall.classList.remove('big', 'focus'); }
+    gWall.classList.toggle('editing', on); $('guide').classList.toggle('editing', on);
+    gApplyHidden();
+    if (!on) { gCur = 0; gWall.classList.add('focus'); $('gAll').textContent = 'Show all'; gSetBig(store.get('gbig', '0') === '1'); gShow(); }
+  }
+  function gToggleHide(d) {
+    const k = d.dataset.key;
+    if (gHidden.has(k)) gHidden.delete(k);
+    else if (gAllSteps.length - gHidden.size > 1) gHidden.add(k);   // always keep at least one step
+    store.set('ghide_' + gId, JSON.stringify([...gHidden]));
+    gApplyHidden();
+  }
   function gShow() { gSteps.forEach((s, i) => { s.classList.toggle('on', i === gCur); s.classList.toggle('done', i < gCur); }); }
   function gGo(i) {
     gCur = Math.max(0, Math.min(gSteps.length - 1, i));
@@ -494,18 +531,20 @@
     $('gTitle').textContent = g.title || 'Steps';
     $('gPrac').style.display = g.practice ? '' : 'none';
     $('gPrac').onclick = () => openSteps(g.practice);
-    gWall.innerHTML = '';
+    gWall.innerHTML = ''; gWall.classList.remove('editing'); $('guide').classList.remove('editing');
+    gId = id; gHidden = gLoadHidden(id);
     (g.steps || []).forEach((st, i) => {
       const d = document.createElement('div'); d.className = 'gstep'; d.tabIndex = 0;
       d.innerHTML = '<div class="gnum"></div><div class="gpic"><img alt=""></div><div class="gsay"></div>';
       d.querySelector('.gnum').textContent = i + 1;
       d.querySelector('img').src = st.img; d.querySelector('img').alt = st.say || '';
       d.querySelector('.gsay').textContent = st.say || '';
-      d.onclick = () => gGo(i);
+      d.dataset.key = st.img || String(i);
+      d.onclick = () => gWall.classList.contains('editing') ? gToggleHide(d) : gGo(gSteps.indexOf(d));
       gWall.appendChild(d);
     });
-    gSteps = Array.from(gWall.children); gCur = 0;
-    gWall.classList.toggle('many', gSteps.length > 8);
+    gAllSteps = Array.from(gWall.children); gCur = 0;
+    gApplyHidden();
     gWall.classList.add('focus'); $('gAll').textContent = 'Show all';
     gSetBig(store.get('gbig', '0') === '1');
     gShow();
@@ -519,6 +558,7 @@
     const f = gWall.classList.toggle('focus'); $('gAll').textContent = f ? 'Show all' : 'One at a time';
   };
   $('gBig').onclick = () => gSetBig(!gWall.classList.contains('big'));
+  $('gEdit').onclick = () => gSetEdit(!gWall.classList.contains('editing'));
 
   /* ---------- archive ---------- */
   function renderArchive() {
@@ -719,6 +759,7 @@
       else if (viewer.classList.contains('show') || guideOpen) closeSteps();
     }
     if ($('kbd').classList.contains('show')) return;
+    if (guideOpen && gWall.classList.contains('editing')) return;
     if (guideOpen && !viewer.classList.contains('show') && ['ArrowRight', 'ArrowLeft', ' '].includes(e.key)) { e.preventDefault(); gGo(gCur + (e.key === 'ArrowLeft' ? -1 : 1)); return; }
     if (e.key === 'd' || e.key === 'D') setDraw(!document.body.classList.contains('drawing'));
     if ((e.key === 'z' || e.key === 'Z') && (e.ctrlKey || e.metaKey)) { marks.pop(); redraw(); }
