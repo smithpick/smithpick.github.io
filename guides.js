@@ -17,7 +17,12 @@ const GUIDES = [
       { img: "guides/classlink.jpg", say: "Open Classlink" },
       { img: "guides/2026-11-11-teach-your-monster/1.jpg", say: "Tap Google Classroom" },
       { img: "guides/2026-11-11-teach-your-monster/2.jpg", say: "Tap Technology" },
-      { img: "guides/2026-11-16-name-typing/1.jpg", say: "Tap Google Forms" }
+      { img: "guides/2026-11-16-name-typing/1.jpg", say: "Tap Google Forms" },
+      { img: "guides/2026-11-16-name-typing/2.jpg", say: "Tap the box" },
+      { img: "guides/2026-11-16-name-typing/3.jpg", say: "Type your name" },
+      { img: "guides/2026-11-16-name-typing/4.jpg", say: "Tap Submit" },
+      { img: "guides/2026-11-16-name-typing/5.jpg", say: "All done? Tap the X" },
+      { img: "guides/2026-11-11-taplights/3-full.jpg", say: "Tap the stars" }
     ]
   },
   {
