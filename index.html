@@ -153,6 +153,21 @@
   .archive li button:hover { background:var(--accent3); }
   .archive li.ahead { font-size:16px; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:.06em; padding:8px 4px 0; }
   .archive li small { font-weight:400; color:var(--soft); font-size:16px; white-space:nowrap; }
+  /* quick links (teacher only, from his Google Sheet) */
+  .qlinks .box { width:min(760px, 100%); }
+  .qlinks ul { gap:8px; }
+  .qlinks li.row { display:flex; gap:8px; align-items:stretch; }
+  .qlinks li.row a { flex:1; display:flex; align-items:center; text-decoration:none; border-radius:14px; padding:14px 18px;
+                     background:var(--accent2); color:var(--ink); font-size:24px; font-weight:700; }
+  .qlinks li.row a:hover { background:var(--accent3); }
+  .qlinks li.row .del { display:none; border:none; border-radius:14px; padding:0 18px; cursor:pointer; background:#d93025; color:#fff; font-size:20px; font-weight:700; }
+  .qlinks.editing li.row .del { display:block; }
+  .qlinks .qmsg { font-size:18px; color:var(--soft); }
+  .qlinks .qbar { display:flex; gap:8px; flex-wrap:wrap; }
+  .qlinks form { display:none; flex-direction:column; gap:8px; }
+  .qlinks form.show { display:flex; }
+  .qlinks input { font-family:var(--font); font-size:20px; padding:10px 14px; border-radius:12px; border:2px solid var(--line); background:var(--btn); color:var(--ink); }
+  .qlinks .tool.go { background:var(--accent); color:var(--onaccent); }
   .plan header .hbtns { display:flex; gap:8px; align-items:center; }
 
   /* ---------- steps overlay ---------- */
@@ -228,6 +243,7 @@
   <div class="topbar">
     <button class="tool" id="bgBtn">Background</button>
     <button class="tool" id="drawBtn">Draw</button>
+    <button class="tool" id="qlBtn">Links</button>
     <button class="tool" id="kbdBtn">Keyboard</button>
     <button class="tool" id="fsBtn">Full screen</button>
   </div>
@@ -319,6 +335,31 @@
   <button class="tool on" id="doneDraw">Done</button>
 </div>
 
+<div class="archive qlinks" id="ql" role="dialog" aria-label="Links">
+  <div class="box">
+    <h2>Links <button class="tool" id="qlClose">Close</button></h2>
+    <div class="qbar">
+      <button class="tool" id="qlAdd">+ Add</button>
+      <button class="tool" id="qlEdit">Remove</button>
+      <button class="tool" id="qlRefresh">Refresh</button>
+    </div>
+    <form id="qlPinForm">
+      <div class="qmsg" id="qlPinMsg">Enter your links PIN. This device will remember it.</div>
+      <input id="qlPin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN">
+      <button class="tool go" type="submit">Unlock</button>
+    </form>
+    <form id="qlForm">
+      <input id="qlName" placeholder="Name (what the button says)" maxlength="120" autocomplete="off">
+      <input id="qlUrl" placeholder="Paste the link" autocomplete="off">
+      <input id="qlGroup" placeholder="Group (optional)" maxlength="60" autocomplete="off">
+      <div class="qbar"><button class="tool go" type="submit">Save</button><button class="tool" type="button" id="qlCancel">Cancel</button></div>
+    </form>
+    <div class="qmsg" id="qlMsg"></div>
+    <ul id="qlList"></ul>
+  </div>
+</div>
+
+<script src="links-config.js"></script>
 <script src="guides.js"></script>
 <script src="plans.js"></script>
 <script>
@@ -747,14 +788,76 @@
   $('avatar').onclick = celebrate;
   $('party').onclick = endParty;
 
+  /* ---------- quick links (his Google Sheet via Apps Script, PIN protected) ---------- */
+  const QURL = (typeof LINKS_URL !== 'undefined' && LINKS_URL) ? LINKS_URL : '';
+  let qBusy = false;
+  function qMsg(t) { $('qlMsg').textContent = t || ''; }
+  function qRender(links) {
+    const ul = $('qlList'); ul.innerHTML = '';
+    const groups = {};
+    (links || []).forEach(l => { (groups[l.group || ''] = groups[l.group || ''] || []).push(l); });
+    Object.keys(groups).sort((a, b) => (a === '') - (b === '') || a.localeCompare(b)).forEach(g => {
+      if (g) { const h = document.createElement('li'); h.className = 'ahead'; h.textContent = g; ul.appendChild(h); }
+      groups[g].forEach(l => {
+        const li = document.createElement('li'); li.className = 'row';
+        const a = document.createElement('a'); a.textContent = l.name; a.href = presentUrl(l.url); a.target = '_blank'; a.rel = 'noopener';
+        const x = document.createElement('button'); x.className = 'del'; x.textContent = 'Remove';
+        x.onclick = () => { if (confirm('Remove "' + l.name + '"?')) qCall({ action:'remove', name:l.name, url:l.url }); };
+        li.append(a, x); ul.appendChild(li);
+      });
+    });
+    if (!links || !links.length) qMsg('No links yet. Tap + Add.');
+  }
+  function qCall(params) {
+    if (!QURL) { qMsg('Links are not set up yet. See links-apps-script.gs.'); return; }
+    const pin = store.get('qlpin', '');
+    if (!pin) { $('qlPinForm').classList.add('show'); $('qlPin').focus(); return; }
+    if (qBusy) return; qBusy = true; qMsg(params && params.action ? 'Saving...' : 'Loading...');
+    const q = new URLSearchParams(Object.assign({ pin }, params || {}));
+    fetch(QURL + (QURL.includes('?') ? '&' : '?') + q.toString())
+      .then(r => r.json())
+      .then(d => {
+        qBusy = false;
+        if (d.error === 'pin') { store.set('qlpin', ''); $('qlPinMsg').textContent = 'That PIN did not work. Try again.'; $('qlPinForm').classList.add('show'); qMsg(''); return; }
+        if (d.error === 'bad') { qMsg('That link did not save. It needs a name and a link that starts with http.'); return; }
+        $('qlPinForm').classList.remove('show'); qMsg('');
+        store.set('qlcache', JSON.stringify(d.links || []));
+        qRender(d.links || []);
+        if (params && params.action === 'add') { $('qlForm').classList.remove('show'); $('qlForm').reset(); }
+      })
+      .catch(() => { qBusy = false; qMsg('Could not reach the links sheet. Check the internet and tap Refresh.'); });
+  }
+  function qOpen() {
+    $('ql').classList.add('show'); $('ql').classList.remove('editing'); $('qlEdit').textContent = 'Remove';
+    try { qRender(JSON.parse(store.get('qlcache', '[]'))); } catch(e) { qRender([]); }
+    qMsg(''); qCall();
+  }
+  $('qlBtn').onclick = qOpen;
+  $('qlClose').onclick = () => $('ql').classList.remove('show');
+  $('ql').onclick = e => { if (e.target === $('ql')) $('ql').classList.remove('show'); };
+  $('qlRefresh').onclick = () => qCall();
+  $('qlAdd').onclick = () => { $('qlForm').classList.add('show'); $('qlName').focus(); };
+  $('qlCancel').onclick = () => { $('qlForm').classList.remove('show'); $('qlForm').reset(); };
+  $('qlEdit').onclick = () => { const on = $('ql').classList.toggle('editing'); $('qlEdit').textContent = on ? 'Done' : 'Remove'; };
+  $('qlPinForm').onsubmit = e => { e.preventDefault(); const v = $('qlPin').value.trim(); if (!v) return; store.set('qlpin', v); $('qlPin').value = ''; qCall(); };
+  $('qlForm').onsubmit = e => {
+    e.preventDefault();
+    let url = $('qlUrl').value.trim(); const name = $('qlName').value.trim();
+    if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+    if (!name || !url) { qMsg('Add a name and a link.'); return; }
+    qCall({ action:'add', name, url, group:$('qlGroup').value.trim() });
+  };
+
   /* ---------- keys ---------- */
   document.addEventListener('keydown', e => {
     if (e.target.tagName === 'SELECT') return;
+    if (e.target.tagName === 'INPUT' && e.key !== 'Escape') return;
     const guideOpen = $('guide').classList.contains('show');
     if (e.key === 'Escape') {
       if (document.body.classList.contains('drawing')) setDraw(false);
       else if ($('kbd').classList.contains('show')) setKbd(false);
       else if ($('archive').classList.contains('show')) $('archive').classList.remove('show');
+      else if ($('ql').classList.contains('show')) $('ql').classList.remove('show');
       else if (viewer.classList.contains('over')) backToSteps();
       else if (viewer.classList.contains('show') || guideOpen) closeSteps();
     }

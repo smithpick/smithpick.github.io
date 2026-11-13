@@ -19,6 +19,7 @@
 - plans.js: one block per week, keyed by that week's Monday (YYYY-MM-DD). Optional icon: "icons/name.png" (real app icon cropped from screenshots, rounded square) replaces the number. Board opens to the newest week that has started. Future weeks can be added ahead. Old weeks stay.
 - guides.js: step guides. id format YYYY-MM-DD-name. Optional practice: "page.html" adds a yellow Practice button on the guide and a Steps button on that page (Teach Your Monster uses login-practice.html). Images in guides/<guide id>/1.jpg, 2.jpg... Old guides stay and show in All pages.
 - keyboard.html: projected Chromebook keyboard (lowercase keys, search key, Chromebook top row). Tap a key to light it orange (tap again to unlight, Clear resets). Typing on a real keyboard flashes that key. Opens as an overlay from anywhere: Keyboard button in the home top bar and next to Draw on guide/practice pages; Close keyboard returns to the same spot. Also works alone at smithpick.github.io/keyboard.html. Drawn, not a screenshot: he asked for it.
+- Quick links (teacher only): Links button in the home top bar opens his list. Links live in HIS Google Sheet, read and written through an Apps Script web app (links-apps-script.gs, he deploys it). links-config.js holds only the web app URL. PIN checked server-side, remembered per device. + Add and Remove on the board write to the sheet, so every device sees the same list. Never put the links or the PIN in this public repo.
 - sub.html, sub-note.pdf, sub-qr.svg: printable half-sheet sub note with QR code to the board.
 - Google Slides links auto-open in present mode.
 
@@ -44,5 +45,6 @@
 - Next week not decided yet. He will say what goes on it.
 
 ## Open items
+- Quick links: waiting on him to deploy links-apps-script.gs and send the /exec URL for links-config.js.
 - Sub access: he can't share his Newline password. Check whether the board's built-in browser works without login; if so bookmark the site. Phone + QR is the fallback.
 - After the move: confirm Pages serves at smithpick.github.io, regenerate sub-qr.svg and sub-note.pdf with that URL, update README links.
