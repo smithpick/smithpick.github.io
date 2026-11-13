@@ -27,6 +27,7 @@
 - He uploads screenshots and says what kids tap.
 - All app guides start from Classlink (kids get there on their own). Google Classroom based guides start "Tap Google Classroom", "Tap Technology", then Quick Links.
 - Shared first step: guides/classlink.jpg, "Open Classlink". His full Classlink page (teacher view, staff apps left in because he wants the full screen), Frontline tooltip removed and the Google Classroom / Seesaw labels rebuilt. It is step 1 of all five guides; new guides start with it too.
+- Google Classroom screenshots (from Nov 13 on): keep most of the Classroom screen so kids see where they are; mark the tap target with a big orange arrow and/or a bold orange highlight instead of cropping tight.
 - Crop to what kids need. If an icon sits in a different place for kids, crop tight to the icon only.
 - Box tap targets in orange (#ff7a00 style rounded box). A big orange arrow is fine for "Scroll down".
 - Cover teacher-only UI (remove buttons, tooltips, gradebook stats) with plain background.
