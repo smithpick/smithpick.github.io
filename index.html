@@ -83,6 +83,7 @@
   .item .kind { font-size:.5em; color:var(--soft); font-weight:400; white-space:nowrap; }
   .item.missing { opacity:.55; cursor:default; }
   .item.missing:hover { transform:none; background:var(--accent2); }
+  .item.plain { cursor:default; } .item.plain:hover { transform:none; background:var(--accent2); }
 
   /* black + green theme */
   body.dark { --ink:#f2f5f2; --soft:#9fb3a5; --card:#151515; --line:#2c2c2c; --accent:#22e36b; --accent2:#1d1d1d;
@@ -169,6 +170,16 @@
   .qlinks input { font-family:var(--font); font-size:20px; padding:10px 14px; border-radius:12px; border:2px solid var(--line); background:var(--btn); color:var(--ink); }
   .qlinks .tool.go { background:var(--accent); color:var(--onaccent); }
   .plan header .hbtns { display:flex; gap:8px; align-items:center; }
+  /* Today (from his Planner): class chips, then that class's activities */
+  .tchips { display:none; flex-wrap:wrap; gap:8px; margin:-1vh 0 1.6vh; }
+  .plan.today .tchips { display:flex; }
+  .plan.today #planPick { display:none !important; }
+  .tchip { font-family:var(--font); font-size:min(2.4vh, 19px); font-weight:700; border-radius:999px; padding:4px 14px; cursor:pointer;
+           border:3px solid var(--accent); background:var(--btn); color:var(--accent); display:flex; align-items:center; gap:6px; }
+  .tchip.on { background:var(--accent); color:var(--onaccent); }
+  .tchip.past:not(.on) { opacity:.5; }
+  .tchip i { width:.7em; height:.7em; border-radius:50%; display:inline-block; }
+  .tnote { color:var(--soft); font-size:min(3vh, 24px); padding:1vh .4vw; }
 
   /* ---------- steps overlay ---------- */
   .viewer { position:fixed; inset:0; z-index:50; background:#000; display:none; }
@@ -278,6 +289,7 @@
         <button class="tool" id="pastBtn">All pages</button>
       </div>
     </header>
+    <div class="tchips" id="tchips"></div>
     <ol class="items" id="items"></ol>
   </section>
 </div>
@@ -498,6 +510,83 @@
   addEventListener('resize', fitPlan);
   $('planPick').value = curIdx; renderPlan(curIdx);
   $('planPick').onchange = e => renderPlan(Number(e.target.value));
+
+  /* ---------- Today: plan card fed by his Planner (read-only, via the Links web app) ----------
+     Falls back to the week list from plans.js if the Planner can't be reached or isn't set up. */
+  const TEAMC = { A:'#00ff00', B:'#00ffff', C:'#ff00ff', D:'#cccccc', E:'#ffff00', F:'#4a86e8', MD:'#ffffff' };
+  let today = null, tPick = null, tPickUntil = 0;
+  function tMin(t, pm) {   // "10:50" -> minutes; school-day hours 1-6 are afternoon
+    const m = String(t).match(/(\d{1,2}):(\d{2})\s*([ap]\.?m\.?)?/i); if (!m) return null;
+    let h = Number(m[1]) % 12; const ap = (m[3] || '').toLowerCase();
+    if (ap.startsWith('p') || (!ap && (h < 7 || pm))) h += 12;
+    return h * 60 + Number(m[2]);
+  }
+  function tSpan(time) { const [a, b] = String(time).split(/[-\u2013]/); return [tMin(a), tMin(b || a)]; }
+  function tNowIdx() {
+    const c = today.classes; if (!c.length) return -1;
+    const d = new Date(), now = d.getHours() * 60 + d.getMinutes();
+    for (let i = 0; i < c.length; i++) { const [s, e] = tSpan(c[i].time); if (e !== null && now <= e) return i; }
+    return c.length - 1;
+  }
+  function iconFor(a) {   // reuse an icon from plans.js when the link or guide matches
+    for (const p of plans) for (const it of p.items) {
+      if (!it.icon) continue;
+      if ((a.guide && it.guide === a.guide) || (a.link && it.url && it.url === a.link)) return it.icon;
+    }
+    return '';
+  }
+  function renderToday() {
+    const card = document.querySelector('.plan'); card.classList.add('today');
+    $('planTitle').textContent = 'Today';
+    const chips = $('tchips'); chips.innerHTML = '';
+    const ol = $('items'); ol.innerHTML = '';
+    const c = today.classes;
+    if (!c.length) { ol.innerHTML = '<li class="tnote">No classes today.</li>'; return; }
+    const nowI = tNowIdx();
+    if (tPick !== null && Date.now() > tPickUntil) tPick = null;
+    const sel = tPick !== null ? tPick : nowI;
+    c.forEach((k, i) => {
+      const b = document.createElement('button'); b.className = 'tchip' + (i === sel ? ' on' : '') + (i < nowI ? ' past' : '');
+      b.innerHTML = '<i></i><span></span>';
+      b.querySelector('i').style.background = TEAMC[String(k.team).toUpperCase()] || 'transparent';
+      b.querySelector('span').textContent = String(k.time).split(/[-\u2013]/)[0].trim() + ' ' + k.teacher;
+      b.onclick = () => { tPick = i; tPickUntil = Date.now() + 20 * 60000; renderToday(); };
+      chips.appendChild(b);
+    });
+    const acts = c[sel].activities || [];
+    if (!acts.length) { ol.innerHTML = '<li class="tnote">Nothing planned for this class.</li>'; return; }
+    acts.forEach((a, n) => {
+      const it = a.guide ? { type:'guide', guide:a.guide } : { type:'link', url:a.link || '' };
+      const has = a.guide ? !!findGuide(a.guide) : !!a.link;
+      const li = document.createElement('li');
+      const el = document.createElement(has && !a.guide ? 'a' : 'button');
+      el.className = 'item' + (has ? '' : ' plain');
+      el.innerHTML = '<span class="n"></span><span class="lbl"></span><span class="kind"></span>';
+      el.querySelector('.n').textContent = n + 1;
+      const ic = iconFor(a); if (ic) { const im = document.createElement('img'); im.className = 'ic'; im.src = ic; im.alt = ''; el.querySelector('.n').replaceWith(im); }
+      el.querySelector('.lbl').textContent = a.activity;
+      if (a.guide && !has) el.querySelector('.kind').textContent = 'Guide missing';
+      wireItem(el, it, has);
+      li.appendChild(el); ol.appendChild(li);
+    });
+    requestAnimationFrame(fitPlan);
+  }
+  function loadToday() {
+    const pin = store.get('qlpin', '');
+    if (!QURL || !pin) return;
+    const key = (() => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
+    try { const c = JSON.parse(store.get('today', 'null')); if (c && c.date === key && c.classes) { today = c; renderToday(); } } catch(e) {}
+    fetch(QURL + (QURL.includes('?') ? '&' : '?') + new URLSearchParams({ pin, action:'today', date:key }))
+      .then(r => r.json())
+      .then(d => {
+        if (!d || d.error || !Array.isArray(d.classes)) return;     // not set up or bad PIN: keep the week list
+        if (d.week === null && !d.classes.length && !today) return; // break week / weekend: keep the week list
+        today = d; store.set('today', JSON.stringify(d)); renderToday();
+      })
+      .catch(() => {});
+  }
+  setInterval(() => { if (today && !document.querySelector('.guide.show')) renderToday(); }, 60000);
+  setTimeout(loadToday, 0);
 
   /* ---------- steps viewer ---------- */
   const viewer = $('viewer'), frame = $('frame');
@@ -820,7 +909,7 @@
         qBusy = false;
         if (d.error === 'pin') { store.set('qlpin', ''); $('qlPinMsg').textContent = 'That PIN did not work. Try again.'; $('qlPinForm').classList.add('show'); qMsg(''); return; }
         if (d.error === 'bad') { qMsg('That link did not save. It needs a name and a link that starts with http.'); return; }
-        $('qlPinForm').classList.remove('show'); qMsg('');
+        $('qlPinForm').classList.remove('show'); qMsg(''); if (!today) loadToday();
         store.set('qlcache', JSON.stringify(d.links || []));
         qRender(d.links || []);
         if (params && params.action === 'add') { $('qlForm').classList.remove('show'); $('qlForm').reset(); }

@@ -20,6 +20,7 @@
 - guides.js: step guides. id format YYYY-MM-DD-name. Optional practice: "page.html" adds a yellow Practice button on the guide and a Steps button on that page (Teach Your Monster uses login-practice.html). Images in guides/<guide id>/1.jpg, 2.jpg... Old guides stay and show in All pages.
 - keyboard.html: projected Chromebook keyboard (lowercase keys, search key, Chromebook top row). Tap a key to light it orange (tap again to unlight, Clear resets). Typing on a real keyboard flashes that key. Opens as an overlay from anywhere: Keyboard button in the home top bar and next to Draw on guide/practice pages; Close keyboard returns to the same spot. Also works alone at smithpick.github.io/keyboard.html. Drawn, not a screenshot: he asked for it.
 - Quick links (teacher only): Links button in the home top bar opens his list. Links live in HIS Google Sheet, read and written through an Apps Script web app (links-apps-script.gs, he deploys it). links-config.js holds only the web app URL. PIN checked server-side, remembered per device. + Add and Remove on the board write to the sheet, so every device sees the same list. Never put the links or the PIN in this public repo.
+- Today (plan card): reads his gradebook Planner through the same Links web app (action=today in links-apps-script.gs, GRADEBOOK_ID set in his copy only). Script reads ONLY Weeks, Plan, MD Plan, Config; resolves All/Day/Team/Class rows and MD Plan like his Planner.gs; sends activity, link, guide id (from "guide: <id>" in Notes; rest of Notes stays private), block time, teacher, team. Board shows class chips (current class auto-selected, tap another to peek for 20 min) and that class's activities. If the Planner isn't reachable, not set up, or no PIN on that device, the card falls back to the week list from plans.js. Never touch his gradebook project or its doGet (it serves his phone app with student data, access MYSELF).
 - sub.html, sub-note.pdf, sub-qr.svg: printable half-sheet sub note with QR code to the board.
 - Google Slides links auto-open in present mode.
 
@@ -47,6 +48,7 @@
 - Week of Nov 16, 2026: Alphatrain Story (Vooks read aloud, he projects), Name Typing (opens the Name Typing guide), Typing on Tap Lights (opens the Tap Lights guide). Board switches on Monday Nov 16.
 
 ## Open items
+- Today: waiting on him to paste the updated links-apps-script.gs, set GRADEBOOK_ID, and deploy a new version. Not confirmed on the real board yet.
 - Quick links: web app URL is in links-config.js (deployed Nov 13). Not yet confirmed working on the real board; this sandbox can't reach script.google.com.
 - Sub access: he can't share his Newline password. Check whether the board's built-in browser works without login; if so bookmark the site. Phone + QR is the fallback.
 - After the move: confirm Pages serves at smithpick.github.io, regenerate sub-qr.svg and sub-note.pdf with that URL, update README links.
