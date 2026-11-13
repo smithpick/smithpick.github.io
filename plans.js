@@ -12,6 +12,14 @@
 
 const PLANS = [
   {
+    week: "2026-11-16",
+    items: [
+      { label: "Alphatrain Story",     type: "link", url: "https://watch.vooks.com/videos/alphatrain" },
+      { label: "Name Typing",          type: "link", url: "https://docs.google.com/forms/d/e/1FAIpQLSdGZxtkxGab72OYM3fuEQOcBV8Op83czDHS-Dexwqln8NRnVw/viewform?usp=publish-editor" },
+      { label: "Typing on Tap Lights", type: "link", url: "https://sites.google.com/plsd.us/taplights-pkc/home", icon: "icons/taplights.png" }
+    ]
+  },
+  {
     week: "2026-11-09",
     items: [
       { label: "Dance Slides",        type: "link",  url: "https://docs.google.com/presentation/d/1KMfl8qeZMs3BYgkST3lehQhcGIaVe5quUXnDFO5Ff0w/edit?slide=id.g27b930ed771_0_60#slide=id.g27b930ed771_0_60", icon: "icons/dance.png" },

@@ -42,7 +42,7 @@
 
 ## Weekly plan
 - Week of Nov 9, 2026: Dance Slides, Teach Your Monster, Login Practice, Classroom, TapLights.
-- Next week not decided yet. He will say what goes on it.
+- Week of Nov 16, 2026: Alphatrain Story (Vooks read aloud, he projects), Name Typing (Google Form, kids open it in Classroom), Typing on Tap Lights (kids open it in Classroom). Board switches on Monday Nov 16.
 
 ## Open items
 - Quick links: web app URL is in links-config.js (deployed Nov 13). Not yet confirmed working on the real board; this sandbox can't reach script.google.com.
