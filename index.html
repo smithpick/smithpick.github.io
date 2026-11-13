@@ -180,6 +180,11 @@
   .tchip.past:not(.on) { opacity:.5; }
   .tchip i { width:.7em; height:.7em; border-radius:50%; display:inline-block; }
   .tnote { color:var(--soft); font-size:min(3vh, 24px); padding:1vh .4vw; }
+  .tnav { display:none; gap:6px; align-items:center; }
+  .plan.today .tnav { display:flex; }
+  .tnav button { font-family:var(--font); font-size:min(3.4vh, 26px); font-weight:700; width:1.8em; height:1.8em; border-radius:50%; cursor:pointer;
+                 border:3px solid var(--accent); background:var(--btn); color:var(--accent); display:flex; align-items:center; justify-content:center; padding:0; }
+  .plan.today.ahead h2 { color:var(--yellow); cursor:pointer; }
 
   /* ---------- steps overlay ---------- */
   .viewer { position:fixed; inset:0; z-index:50; background:#000; display:none; }
@@ -283,7 +288,10 @@
 
   <section class="card plan" aria-label="Plan">
     <header>
-      <h2 id="planTitle">Plan</h2>
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <h2 id="planTitle">Plan</h2>
+        <div class="tnav"><button id="tPrev" aria-label="Day before">&lsaquo;</button><button id="tNext" aria-label="Next day">&rsaquo;</button></div>
+      </div>
       <div class="hbtns">
         <select id="planPick" aria-label="Choose plan"></select>
         <button class="tool" id="pastBtn">All pages</button>
@@ -514,7 +522,15 @@
   /* ---------- Today: plan card fed by his Planner (read-only, via the Links web app) ----------
      Falls back to the week list from plans.js if the Planner can't be reached or isn't set up. */
   const TEAMC = { A:'#00ff00', B:'#00ffff', C:'#ff00ff', D:'#cccccc', E:'#ffff00', F:'#4a86e8', MD:'#ffffff' };
-  let today = null, tPick = null, tPickUntil = 0;
+  let today = null, tPick = null, tPickUntil = 0, tView = null, tBack = null;
+  const tCache = {};
+  function isoOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function todayIso() { return isoOf(new Date()); }
+  function tStep(iso, dir) {   // next/previous school day (skips Sat/Sun)
+    const d = new Date(iso + 'T12:00:00');
+    do { d.setDate(d.getDate() + dir); } while (d.getDay() === 0 || d.getDay() === 6);
+    return isoOf(d);
+  }
   function tMin(t, pm) {   // "10:50" -> minutes; school-day hours 1-6 are afternoon
     const m = String(t).match(/(\d{1,2}):(\d{2})\s*([ap]\.?m\.?)?/i); if (!m) return null;
     let h = Number(m[1]) % 12; const ap = (m[3] || '').toLowerCase();
@@ -524,6 +540,7 @@
   function tSpan(time) { const [a, b] = String(time).split(/[-\u2013]/); return [tMin(a), tMin(b || a)]; }
   function tNowIdx() {
     const c = today.classes; if (!c.length) return -1;
+    if (today.date !== todayIso()) return 0;
     const d = new Date(), now = d.getHours() * 60 + d.getMinutes();
     for (let i = 0; i < c.length; i++) { const [s, e] = tSpan(c[i].time); if (e !== null && now <= e) return i; }
     return c.length - 1;
@@ -537,16 +554,18 @@
   }
   function renderToday() {
     const card = document.querySelector('.plan'); card.classList.add('today');
-    $('planTitle').textContent = 'Today';
+    const isNowDay = today.date === todayIso();
+    card.classList.toggle('ahead', !isNowDay);
+    $('planTitle').textContent = isNowDay ? 'Today' : new Date(today.date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
     const chips = $('tchips'); chips.innerHTML = '';
     const ol = $('items'); ol.innerHTML = '';
     const c = today.classes;
-    if (!c.length) { ol.innerHTML = '<li class="tnote">No classes today.</li>'; return; }
+    if (!c.length) { ol.innerHTML = '<li class="tnote">' + (today.week === null ? 'No school this day.' : 'No classes this day.') + '</li>'; return; }
     const nowI = tNowIdx();
     if (tPick !== null && Date.now() > tPickUntil) tPick = null;
     const sel = tPick !== null ? tPick : nowI;
     c.forEach((k, i) => {
-      const b = document.createElement('button'); b.className = 'tchip' + (i === sel ? ' on' : '') + (i < nowI ? ' past' : '');
+      const b = document.createElement('button'); b.className = 'tchip' + (i === sel ? ' on' : '') + (isNowDay && i < nowI ? ' past' : '');
       b.innerHTML = '<i></i><span></span>';
       b.querySelector('i').style.background = TEAMC[String(k.team).toUpperCase()] || 'transparent';
       b.querySelector('span').textContent = String(k.time).split(/[-\u2013]/)[0].trim() + ' ' + k.teacher;
@@ -571,21 +590,53 @@
     });
     requestAnimationFrame(fitPlan);
   }
-  function loadToday() {
+  function fetchDay(iso) {
     const pin = store.get('qlpin', '');
-    if (!QURL || !pin) return;
-    const key = (() => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
-    try { const c = JSON.parse(store.get('today', 'null')); if (c && c.date === key && c.classes) { today = c; renderToday(); } } catch(e) {}
-    fetch(QURL + (QURL.includes('?') ? '&' : '?') + new URLSearchParams({ pin, action:'today', date:key }))
+    if (!QURL || !pin) return Promise.resolve(null);
+    return fetch(QURL + (QURL.includes('?') ? '&' : '?') + new URLSearchParams({ pin, action:'today', date:iso }))
       .then(r => r.json())
-      .then(d => {
-        if (!d || d.error || !Array.isArray(d.classes)) return;     // not set up or bad PIN: keep the week list
-        if (d.week === null && !d.classes.length && !today) return; // break week / weekend: keep the week list
-        today = d; store.set('today', JSON.stringify(d)); renderToday();
-      })
-      .catch(() => {});
+      .then(d => (d && !d.error && Array.isArray(d.classes)) ? (tCache[iso] = d) : null)
+      .catch(() => null);
   }
-  setInterval(() => { if (today && !document.querySelector('.guide.show')) renderToday(); }, 60000);
+  function loadToday() {
+    const key = todayIso();
+    if (!QURL || !store.get('qlpin', '')) return;
+    try { const c = JSON.parse(store.get('today', 'null')); if (c && c.date === key && c.classes && !tView) { today = c; renderToday(); } } catch(e) {}
+    fetchDay(key).then(d => {
+      if (!d) return;                                             // not set up or bad PIN: keep the week list
+      store.set('today', JSON.stringify(d));
+      if (tView && tView !== key) return;                         // he is looking at another day
+      today = d; renderToday();
+    });
+  }
+  // Look at other days with < >. Tap the date (or wait 5 minutes) to come back to today.
+  function tGo(dir) {
+    const from = (today && today.date) || todayIso();
+    const iso = tStep(from, dir); tPick = null;
+    if (iso === todayIso()) { tHome(); return; }
+    tView = iso; clearTimeout(tBack); tBack = setTimeout(tHome, 5 * 60000);
+    if (tCache[iso]) { today = tCache[iso]; renderToday(); return; }
+    const card = document.querySelector('.plan'); card.classList.add('ahead');
+    $('planTitle').textContent = new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    $('tchips').innerHTML = ''; $('items').innerHTML = '<li class="tnote">Loading...</li>';
+    fetchDay(iso).then(d => {
+      if (tView !== iso) return;
+      if (!d) { $('items').innerHTML = '<li class="tnote">Could not load that day.</li>'; return; }
+      today = d; renderToday();
+    });
+  }
+  function tHome() {
+    clearTimeout(tBack); tView = null; tPick = null;
+    const key = todayIso();
+    let c = tCache[key];
+    if (!c) { try { c = JSON.parse(store.get('today', 'null')); } catch(e) {} }
+    if (c && c.date === key) { today = c; renderToday(); }
+    loadToday();
+  }
+  $('tPrev').onclick = () => tGo(-1);
+  $('tNext').onclick = () => tGo(1);
+  $('planTitle').onclick = () => { if (tView) tHome(); };
+  setInterval(() => { if (today && !tView && !document.querySelector('.guide.show')) renderToday(); }, 60000);
   setTimeout(loadToday, 0);
 
   /* ---------- steps viewer ---------- */
