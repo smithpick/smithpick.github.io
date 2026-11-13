@@ -45,6 +45,6 @@
 - Next week not decided yet. He will say what goes on it.
 
 ## Open items
-- Quick links: waiting on him to deploy links-apps-script.gs and send the /exec URL for links-config.js.
+- Quick links: web app URL is in links-config.js (deployed Nov 13). Not yet confirmed working on the real board; this sandbox can't reach script.google.com.
 - Sub access: he can't share his Newline password. Check whether the board's built-in browser works without login; if so bookmark the site. Phone + QR is the fallback.
 - After the move: confirm Pages serves at smithpick.github.io, regenerate sub-qr.svg and sub-note.pdf with that URL, update README links.
