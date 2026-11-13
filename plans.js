@@ -15,8 +15,8 @@ const PLANS = [
     week: "2026-11-16",
     items: [
       { label: "Alphatrain Story",     type: "link", url: "https://watch.vooks.com/videos/alphatrain" },
-      { label: "Name Typing",          type: "link", url: "https://docs.google.com/forms/d/e/1FAIpQLSdGZxtkxGab72OYM3fuEQOcBV8Op83czDHS-Dexwqln8NRnVw/viewform?usp=publish-editor" },
-      { label: "Typing on Tap Lights", type: "link", url: "https://sites.google.com/plsd.us/taplights-pkc/home", icon: "icons/taplights.png" }
+      { label: "Name Typing",          type: "guide", guide: "2026-11-16-name-typing" },
+      { label: "Typing on Tap Lights", type: "guide", guide: "2026-11-11-taplights", icon: "icons/taplights.png" }
     ]
   },
   {

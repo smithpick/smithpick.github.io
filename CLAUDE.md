@@ -27,7 +27,7 @@
 - He uploads screenshots and says what kids tap.
 - All app guides start from Classlink (kids get there on their own). Google Classroom based guides start "Tap Google Classroom", "Tap Technology", then Quick Links.
 - Shared first step: guides/classlink.jpg, "Open Classlink". His full Classlink page (teacher view, staff apps left in because he wants the full screen), Frontline tooltip removed and the Google Classroom / Seesaw labels rebuilt. It is step 1 of all five guides; new guides start with it too.
-- Google Classroom screenshots (from Nov 13 on): keep most of the Classroom screen so kids see where they are; mark the tap target with a big orange arrow and/or a bold orange highlight instead of cropping tight.
+- Google Classroom screenshots (from Nov 13 on): keep most of the Classroom screen so kids see where they are; mark the tap target with a big orange arrow (white outline) plus an orange box instead of cropping tight. He said teacher-only Classroom UI (banner edit/info buttons, New announcement, Repost, Quick Links X's) can stay; don't spend time removing it.
 - Crop to what kids need. If an icon sits in a different place for kids, crop tight to the icon only.
 - Box tap targets in orange (#ff7a00 style rounded box). A big orange arrow is fine for "Scroll down".
 - Cover teacher-only UI (remove buttons, tooltips, gradebook stats) with plain background.
@@ -38,12 +38,13 @@
 - Log in to Teach Your Monster (10 steps: Open Classlink full page, original login page images, then Monster to Read tile, then your monster, NOT Practice)
 - How to open INFOhio (Open Classlink, Infohio tile, Grades K-5, Scroll down, Tap the apple, Pick one)
 - How to open TypeTastic (Open Classlink, Classroom, Technology, Quick Links TypeTastic, red fox, Pick a game)
-- How to open Tap Lights (Open Classlink, Classroom, Technology, Quick Links Tap Lights, Pick one)
+- How to open Tap Lights (Open Classlink, Classroom, Technology, Tap the stars (full Classroom screen, 3-full.jpg), Pick one)
+- Name Typing (Open Classlink, Classroom, Technology, Tap Google Forms (full Classroom screen). More steps may come for the form sign-in.)
 - How to open Seesaw (Open Classlink, purple S, green robot, Tap Start on generic card)
 
 ## Weekly plan
 - Week of Nov 9, 2026: Dance Slides, Teach Your Monster, Login Practice, Classroom, TapLights.
-- Week of Nov 16, 2026: Alphatrain Story (Vooks read aloud, he projects), Name Typing (Google Form, kids open it in Classroom), Typing on Tap Lights (kids open it in Classroom). Board switches on Monday Nov 16.
+- Week of Nov 16, 2026: Alphatrain Story (Vooks read aloud, he projects), Name Typing (opens the Name Typing guide), Typing on Tap Lights (opens the Tap Lights guide). Board switches on Monday Nov 16.
 
 ## Open items
 - Quick links: web app URL is in links-config.js (deployed Nov 13). Not yet confirmed working on the real board; this sandbox can't reach script.google.com.
