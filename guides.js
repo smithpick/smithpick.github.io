@@ -11,7 +11,7 @@
 const GUIDES = [
   {
     id: "2026-11-16-name-typing",
-    title: "Name Typing",
+    title: "Name Typing and Tap Lights",
     date: "2026-11-16",
     steps: [
       { img: "guides/classlink.jpg", say: "Open Classlink" },
@@ -21,7 +21,8 @@ const GUIDES = [
       { img: "guides/2026-11-16-name-typing/2.jpg", say: "Tap the box" },
       { img: "guides/2026-11-16-name-typing/3.jpg", say: "Type your name" },
       { img: "guides/2026-11-16-name-typing/4.jpg", say: "Tap Submit" },
-      { img: "guides/2026-11-16-name-typing/6.jpg", say: "Tap the Tap Lights link" }
+      { img: "guides/2026-11-16-name-typing/6.jpg", say: "Tap the Tap Lights link" },
+      { img: "guides/2026-11-11-taplights/4.jpg", say: "Pick one" }
     ]
   },
   {

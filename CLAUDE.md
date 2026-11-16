@@ -40,12 +40,12 @@
 - How to open INFOhio (Open Classlink, Infohio tile, Grades K-5, Scroll down, Tap the apple, Pick one)
 - How to open TypeTastic (Open Classlink, Classroom, Technology, Quick Links TypeTastic, red fox, Pick a game)
 - How to open Tap Lights (Open Classlink, Classroom, Technology, Tap the stars (full Classroom screen, 3-full.jpg), Pick one)
-- Name Typing (8 steps: Open Classlink, Classroom, Technology, Tap Google Forms, Tap the box (email checkbox), Type your name, Tap Submit, Tap the Tap Lights link (form's confirmation message links to Tap Lights). Closing the form tab was too hard for K on Nov 16, so the form's done page now carries the next link instead. Form pictures: his bookmarks bar and email covered.)
+- Name Typing and Tap Lights (guide id 2026-11-16-name-typing; 9 steps: Open Classlink, Classroom, Technology, Tap Google Forms, Tap the box (email checkbox), Type your name, Tap Submit, Tap the Tap Lights link (form's confirmation message links to Tap Lights), Pick one (Tap Lights grid). Closing the form tab was too hard for K on Nov 16, so the form's done page now carries the next link instead. Form pictures: his bookmarks bar and email covered.)
 - How to open Seesaw (Open Classlink, purple S, green robot, Tap Start on generic card)
 
 ## Weekly plan
 - Week of Nov 9, 2026: Dance Slides, Teach Your Monster, Login Practice, Classroom, TapLights.
-- Week of Nov 16, 2026: Alphatrain Story (Vooks read aloud, he projects), Name Typing (opens the Name Typing guide), Typing on Tap Lights (opens the Tap Lights guide). Board switches on Monday Nov 16.
+- Week of Nov 16, 2026: Alphatrain Story (Vooks read aloud, he projects), Name Typing and Tap Lights (one guide, ends in Tap Lights). Board switches on Monday Nov 16.
 
 ## Open items
 - Class chips: waiting on him to paste the updated links-apps-script.gs, set GRADEBOOK_ID, and deploy a new version. Not confirmed on the real board yet.
