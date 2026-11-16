@@ -40,7 +40,7 @@
 - How to open INFOhio (Open Classlink, Infohio tile, Grades K-5, Scroll down, Tap the apple, Pick one)
 - How to open TypeTastic (Open Classlink, Classroom, Technology, Quick Links TypeTastic, red fox, Pick a game)
 - How to open Tap Lights (Open Classlink, Classroom, Technology, Tap the stars (full Classroom screen, 3-full.jpg), Pick one)
-- Name Typing (9 steps: Open Classlink, Classroom, Technology, Tap Google Forms, Tap the box (email checkbox), Type your name, Tap Submit, All done? Tap the X (closes the form tab, back to Classroom), Tap the stars (Tap Lights). Form pictures: his bookmarks bar and email covered.)
+- Name Typing (8 steps: Open Classlink, Classroom, Technology, Tap Google Forms, Tap the box (email checkbox), Type your name, Tap Submit, Tap the Tap Lights link (form's confirmation message links to Tap Lights). Closing the form tab was too hard for K on Nov 16, so the form's done page now carries the next link instead. Form pictures: his bookmarks bar and email covered.)
 - How to open Seesaw (Open Classlink, purple S, green robot, Tap Start on generic card)
 
 ## Weekly plan

@@ -21,8 +21,7 @@ const GUIDES = [
       { img: "guides/2026-11-16-name-typing/2.jpg", say: "Tap the box" },
       { img: "guides/2026-11-16-name-typing/3.jpg", say: "Type your name" },
       { img: "guides/2026-11-16-name-typing/4.jpg", say: "Tap Submit" },
-      { img: "guides/2026-11-16-name-typing/5.jpg", say: "All done? Tap the X" },
-      { img: "guides/2026-11-11-taplights/3-full.jpg", say: "Tap the stars" }
+      { img: "guides/2026-11-16-name-typing/6.jpg", say: "Tap the Tap Lights link" }
     ]
   },
   {
