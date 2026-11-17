@@ -6,6 +6,10 @@
 - Live at https://smithpick.github.io (repo smithpick/smithpick.github.io, GitHub Pages from main, root).
 - The smithpick org is his personal org, not the district's. No school name in the org name on purpose (may change positions).
 
+## Project ledger
+- Google Sheet "Tech Board Project Ledger", ID 1A_WV2cVxPLcna4PdZG8rXBI3eRj2CTDGuQBbsJu-4lw (his district Drive, not shared publicly).
+- Use the project-ledger skill: read State at the start of a session, log ideas/issues/decisions/done as they happen, update State and add a Changes row at the end. Build state only, never student data.
+
 ## Rules
 - Public repo and site. No student names, class lists, class codes, or student faces in screenshots. Teacher's own name and avatar: keep out where easy. Exception he asked for: avatar.png (MS tiger logo) next to the clock.
 - Kid-facing visuals use real screenshots, not drawings. Kindergartners need to see the exact thing they tap. Exception he approved: the generic Seesaw "Tech Activity" card (guides/2026-11-11-seesaw/3.jpg).
