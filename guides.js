@@ -22,7 +22,7 @@ const GUIDES = [
       { img: "guides/2026-11-16-name-typing/3.jpg", say: "Type your name" },
       { img: "guides/2026-11-16-name-typing/4.jpg", say: "Tap Submit" },
       { img: "guides/2026-11-16-name-typing/6.jpg", say: "Tap the Tap Lights link" },
-      { img: "guides/2026-11-11-taplights/4.jpg", say: "Pick one" }
+      { img: "guides/2026-11-16-name-typing/7.jpg", say: "Tap Keyboard" }
     ]
   },
   {
@@ -63,7 +63,7 @@ const GUIDES = [
       { img: "guides/2026-11-11-taplights/1.jpg", say: "Tap Google Classroom" },
       { img: "guides/2026-11-11-taplights/2.jpg", say: "Tap Technology" },
       { img: "guides/2026-11-11-taplights/3-full.jpg", say: "Tap the stars" },
-      { img: "guides/2026-11-11-taplights/4.jpg", say: "Pick one" }
+      { img: "guides/2026-11-11-taplights/4-v2.jpg", say: "Pick one" }
     ]
   },
   {
