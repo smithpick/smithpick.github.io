@@ -5,6 +5,7 @@
 //   { label: "Short label", type: "guide", guide: "<guide id>" }
 //
 // Pictures go in guides/<guide id>/1.jpg, 2.jpg, ...
+// Optional on a step: link: "https://..." makes that step's picture (and an Open button) open the page.
 // Optional practice: "page.html" adds a Practice button to the guide, and a Steps button on that page.
 // Public repo: no student names, class lists, or class codes in screenshots or text.
 
@@ -18,7 +19,7 @@ const GUIDES = [
       { img: "guides/2026-11-11-teach-your-monster/1.jpg", say: "Tap Google Classroom" },
       { img: "guides/2026-11-11-teach-your-monster/2.jpg", say: "Tap Technology" },
       { img: "guides/2026-11-23-choice-board/1.jpg", say: "Tap the Choice Board" },
-      { img: "guides/2026-11-23-choice-board/2.jpg", say: "Pick one" }
+      { img: "guides/2026-11-23-choice-board/2.jpg", say: "Pick one", link: "https://docs.google.com/presentation/d/19czg1aMIvAXk5d72q3IF7mgucqQdpOa36Fav-xCBa2I/present?slide=id.cb_slide" }
     ]
   },
   {

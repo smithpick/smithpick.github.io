@@ -137,6 +137,12 @@
   .ghint { display:none; text-align:center; font-size:clamp(18px, 2.8vh, 28px); font-weight:700; }
   .guide.editing .ghint { display:block; }
   .guide.editing #gBack, .guide.editing #gNext, .guide.editing #gAll, .guide.editing #gBig, .guide.editing #gPrac { display:none !important; }
+  /* steps with a link: picture and Open button open it */
+  .gstep.haslink .gpic { cursor:pointer; }
+  .gopen { font-family:var(--font); font-size:clamp(18px, 2.6vh, 28px); font-weight:700; border-radius:999px; padding:6px 26px; cursor:pointer;
+           border:3px solid var(--accent); background:var(--accent); color:var(--onaccent); }
+  .gwall.editing .gopen { display:none; }
+  .gwall.big .gopen { font-size:clamp(22px, 3.6vh, 38px); }
   /* Big: one picture at a time */
   .gwall.big .gstep { display:none; }
   .gwall.big .gstep.on { display:flex; width:min(92vw, 1400px); height:100%; transform:none; border-color:transparent; }
@@ -637,6 +643,14 @@
       d.querySelector('.gsay').textContent = st.say || '';
       d.dataset.key = st.img || String(i);
       d.onclick = () => gWall.classList.contains('editing') ? gToggleHide(d) : gGo(gSteps.indexOf(d));
+      // A step with link: tapping its picture (or the Open button) opens that page in a new tab.
+      if (st.link) {
+        d.classList.add('haslink');
+        const go = e => { if (gWall.classList.contains('editing')) return; e.stopPropagation(); gGo(gSteps.indexOf(d)); window.open(presentUrl(st.link), '_blank', 'noopener'); };
+        d.querySelector('.gpic').onclick = go;
+        const ob = document.createElement('button'); ob.className = 'gopen'; ob.textContent = 'Open'; ob.onclick = go;
+        d.appendChild(ob);
+      }
       gWall.appendChild(d);
     });
     gAllSteps = Array.from(gWall.children); gCur = 0;
