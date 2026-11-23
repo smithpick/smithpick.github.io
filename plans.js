@@ -12,6 +12,12 @@
 
 const PLANS = [
   {
+    week: "2026-11-23",
+    items: [
+      { label: "Choice Board", type: "link", url: "" }
+    ]
+  },
+  {
     week: "2026-11-16",
     items: [
       { label: "Alphatrain Story",     type: "link", url: "https://watch.vooks.com/videos/alphatrain" },

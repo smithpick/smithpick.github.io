@@ -51,6 +51,7 @@
 ## Weekly plan
 - Week of Nov 9, 2026: Dance Slides, Teach Your Monster, Login Practice, Classroom, TapLights.
 - Week of Nov 16, 2026: Alphatrain Story (Vooks read aloud, he projects), Name Typing and Tap Lights (one guide, ends in Tap Lights). Board switches on Monday Nov 16.
+- Week of Nov 23, 2026: Choice Board (link not given yet, shows Link needed).
 
 ## Open items
 - Class chips: waiting on him to paste the updated links-apps-script.gs, set GRADEBOOK_ID, and deploy a new version. Not confirmed on the real board yet.
