@@ -14,7 +14,7 @@ const PLANS = [
   {
     week: "2026-11-23",
     items: [
-      { label: "Choice Board", type: "link", url: "https://docs.google.com/presentation/d/19czg1aMIvAXk5d72q3IF7mgucqQdpOa36Fav-xCBa2I/present?slide=id.cb_slide", icon: "icons/choiceboard.png" }
+      { label: "Choice Board", type: "guide", guide: "2026-11-23-choice-board", icon: "icons/choiceboard.png" }
     ]
   },
   {

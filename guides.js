@@ -10,6 +10,18 @@
 
 const GUIDES = [
   {
+    id: "2026-11-23-choice-board",
+    title: "Choice Board",
+    date: "2026-11-23",
+    steps: [
+      { img: "guides/classlink.jpg", say: "Open Classlink" },
+      { img: "guides/2026-11-11-teach-your-monster/1.jpg", say: "Tap Google Classroom" },
+      { img: "guides/2026-11-11-teach-your-monster/2.jpg", say: "Tap Technology" },
+      { img: "guides/2026-11-23-choice-board/1.jpg", say: "Tap the Choice Board" },
+      { img: "guides/2026-11-23-choice-board/2.jpg", say: "Pick one" }
+    ]
+  },
+  {
     id: "2026-11-16-name-typing",
     title: "Name Typing and Tap Lights",
     date: "2026-11-16",
