@@ -11,6 +11,15 @@
 
 const GUIDES = [
   {
+    id: "2026-11-24-switch-tabs",
+    title: "Switch tabs",
+    date: "2026-11-24",
+    steps: [
+      { img: "guides/2026-11-24-switch-tabs/1.jpg", say: "Look at the tabs at the top" },
+      { img: "guides/2026-11-24-switch-tabs/2.jpg", say: "Tap the name. NOT the X" }
+    ]
+  },
+  {
     id: "2026-11-23-choice-board",
     title: "Choice Board",
     date: "2026-11-23",

@@ -14,7 +14,8 @@ const PLANS = [
   {
     week: "2026-11-23",
     items: [
-      { label: "Choice Board", type: "guide", guide: "2026-11-23-choice-board", icon: "icons/choiceboard.png" }
+      { label: "Choice Board", type: "guide", guide: "2026-11-23-choice-board", icon: "icons/choiceboard.png" },
+      { label: "Switch tabs",  type: "guide", guide: "2026-11-24-switch-tabs" }
     ]
   },
   {

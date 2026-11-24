@@ -47,12 +47,13 @@
 - How to open Tap Lights (Open Classlink, Classroom, Technology, Tap the stars (full Classroom screen, 3-full.jpg), Pick one (new 14-tile Tap Lights home, 4-v2.jpg, Nov 18))
 - Name Typing and Tap Lights (guide id 2026-11-16-name-typing; 9 steps: Open Classlink, Classroom, Technology, Tap Google Forms, Tap the box (email checkbox), Type your name, Tap Submit, Tap the Tap Lights link (form's confirmation message links to Tap Lights), Tap Keyboard (new Tap Lights home screen, other tiles dimmed). Closing the form tab was too hard for K on Nov 16, so the form's done page now carries the next link instead. Form pictures: his bookmarks bar and email covered.)
 - Choice Board (2026-11-23-choice-board: Open Classlink, Classroom, Technology, Tap the Choice Board (Slides card in a Classroom post), Pick one (the choice slide))
+- Switch tabs (2026-11-24-switch-tabs: Look at the tabs at the top (tab row boxed), Tap the name. NOT the X (Classroom tab name boxed, X left outside the box). From his form screenshot, bookmarks covered. Kids struggled with tab X on Nov 16.)
 - How to open Seesaw (Open Classlink, purple S, green robot, Tap Start on generic card)
 
 ## Weekly plan
 - Week of Nov 9, 2026: Dance Slides, Teach Your Monster, Login Practice, Classroom, TapLights.
 - Week of Nov 16, 2026: Alphatrain Story (Vooks read aloud, he projects), Name Typing and Tap Lights (one guide, ends in Tap Lights). Board switches on Monday Nov 16.
-- Week of Nov 23, 2026: Choice Board (opens the Choice Board guide; turkey icon cropped from his slide). Slide link: https://docs.google.com/presentation/d/19czg1aMIvAXk5d72q3IF7mgucqQdpOa36Fav-xCBa2I/present?slide=id.cb_slide Choices: Teach Your Monster, Tap Lights, PBS Kids, Typetastic, Once Upon a Farm, Turkey Feathers.
+- Week of Nov 23, 2026: Choice Board (opens the Choice Board guide; turkey icon cropped from his slide). Slide link: https://docs.google.com/presentation/d/19czg1aMIvAXk5d72q3IF7mgucqQdpOa36Fav-xCBa2I/present?slide=id.cb_slide Choices: Teach Your Monster, Tap Lights, PBS Kids, Typetastic, Once Upon a Farm, Turkey Feathers. Also Switch tabs (added Nov 24).
 
 ## Open items
 - Class chips: waiting on him to paste the updated links-apps-script.gs, set GRADEBOOK_ID, and deploy a new version. Not confirmed on the real board yet.
